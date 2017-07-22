@@ -29,7 +29,7 @@
             android:gravity="bottom|center_horizontal"
             android:includeFontPadding="false"
             android:maxLines="1"
-            android:textColor="#0c0c0c"
+            android:textColor="@color/colorPrimaryText"
             android:textSize="11sp"
             tools:text="囧恩" />
 
@@ -40,7 +40,7 @@
             android:gravity="top|center_horizontal"
             android:includeFontPadding="false"
             android:maxLines="1"
-            android:textColor="#0c0c0c"
+            android:textColor="@color/colorPrimaryText"
             android:textSize="9sp"
             tools:text="配偶配偶" />
 

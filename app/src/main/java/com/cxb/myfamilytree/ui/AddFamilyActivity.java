@@ -25,6 +25,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import static com.cxb.myfamilytree.model.FamilyBean.SEX_FEMALE;
+import static com.cxb.myfamilytree.model.FamilyBean.SEX_MALE;
+
 /**
  * 添加家庭成员
  */
@@ -67,15 +70,19 @@ public class AddFamilyActivity extends BaseAppCompatActivity {
         final Intent intent = getIntent();
         mAddType = intent.getStringExtra(ADD_TYPE);
         mSelectFamily = intent.getParcelableExtra(FAMILY_INFO);
-
+        final String familyName = mSelectFamily.getMemberName();
         if (Config.TYPE_ADD_SPOUSE.equals(mAddType)) {
             mToolBar.setTitle("添加配偶");
+            mToolBar.setSubtitle("添加" + familyName + "的配偶");
         } else if (Config.TYPE_ADD_PARENT.equals(mAddType)) {
             mToolBar.setTitle("添加父母");
+            mToolBar.setSubtitle("添加" + familyName + "的父母");
         } else if (Config.TYPE_ADD_CHILD.equals(mAddType)) {
             mToolBar.setTitle("添加子女");
+            mToolBar.setSubtitle("添加" + familyName + "的子女");
         } else if (Config.TYPE_ADD_BROTHERS_AND_SISTERS.equals(mAddType)) {
             mToolBar.setTitle("添加兄弟姐妹");
+            mToolBar.setSubtitle("添加" + familyName + "的兄弟姐妹");
         }
 
         setSupportActionBar(mToolBar);
@@ -116,7 +123,7 @@ public class AddFamilyActivity extends BaseAppCompatActivity {
         final String name = mEditName.getText().toString();
         final String call = mEditCall.getText().toString();
         final String birthday = mEditBirthday.getText().toString();
-        final String gender = mGenderGroup.getCheckedRadioButtonId() == R.id.rb_female ? "2" : "1";
+        final String gender = mGenderGroup.getCheckedRadioButtonId() == R.id.rb_female ? SEX_FEMALE : SEX_MALE;
         if (TextUtils.isEmpty(name)) {
             Snackbar.make(mEditName, "真实姓名不能为空", Snackbar.LENGTH_LONG).show();
         } else if (TextUtils.isEmpty(call)) {
@@ -146,14 +153,9 @@ public class AddFamilyActivity extends BaseAppCompatActivity {
                 mSelectFamily.setSpouseId(familyId);
                 dbHelper.save(family);
                 dbHelper.save(mSelectFamily);
-                final List<FamilyBean> children;
-                if ("1".equals(selectFamilySex)) {
-                    children = dbHelper.findFamiliesByFatherId(selectFamilyId, "");
-                } else {
-                    children = dbHelper.findFamiliesByMotherId(selectFamilyId, "");
-                }
+                final List<FamilyBean> children = dbHelper.getChildren(mSelectFamily, selectFamilyId);
                 for (FamilyBean child : children) {
-                    if ("1".equals(familySex)) {
+                    if (SEX_MALE.equals(familySex)) {
                         child.setFatherId(familyId);
                     } else {
                         child.setMotherId(familyId);
@@ -169,7 +171,7 @@ public class AddFamilyActivity extends BaseAppCompatActivity {
             final String familySex = family.getSex();
             final String fatherId = mSelectFamily.getFatherId();
             final String motherId = mSelectFamily.getMotherId();
-            if ("1".equals(familySex)) {
+            if (SEX_MALE.equals(familySex)) {
                 if (TextUtils.isEmpty(fatherId)) {
                     final FamilyDBHelper dbHelper = new FamilyDBHelper(this);
                     family.setSpouseId(motherId);
@@ -227,7 +229,7 @@ public class AddFamilyActivity extends BaseAppCompatActivity {
             }
         } else if (Config.TYPE_ADD_CHILD.equals(mAddType)) {
             final String selectFamilySex = mSelectFamily.getSex();
-            if ("1".equals(selectFamilySex)) {
+            if (SEX_MALE.equals(selectFamilySex)) {
                 family.setFatherId(mSelectFamily.getMemberId());
                 family.setMotherId(mSelectFamily.getSpouseId());
             } else {

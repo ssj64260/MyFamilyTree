@@ -23,6 +23,7 @@ import com.cxb.myfamilytree.R;
 import com.cxb.myfamilytree.app.BaseAppCompatActivity;
 import com.cxb.myfamilytree.config.Config;
 import com.cxb.myfamilytree.model.FamilyBean;
+import com.cxb.myfamilytree.utils.FastClick;
 import com.cxb.myfamilytree.widget.FamilyDBHelper;
 import com.cxb.myfamilytree.widget.FamilyTreeView;
 import com.cxb.myfamilytree.widget.OnFamilyClickListener;
@@ -83,13 +84,13 @@ public class FamilyTreeActivity extends BaseAppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_show) {
-            boolean isShow = mFamilyTree.ismBottomNeedSpouse();
+            boolean isShow = mFamilyTree.isBottomNeedSpouse();
             if (isShow) {
                 item.setTitle(getString(R.string.text_do_show_spouse));
             } else {
                 item.setTitle(getString(R.string.text_do_not_show_spouse));
             }
-            mFamilyTree.setmBottomNeedSpouse(!isShow);
+            mFamilyTree.setBottomNeedSpouse(!isShow);
             mFamilyTree.drawFamilyTree(mSelectFamily);
             return true;
         }
@@ -152,6 +153,7 @@ public class FamilyTreeActivity extends BaseAppCompatActivity {
         intent.putExtra(AddFamilyActivity.ADD_TYPE, type);
         intent.putExtra(AddFamilyActivity.FAMILY_INFO, mSelectFamily);
         startActivityForResult(intent, REQUEST_CHANGE_FAMILY);
+        closeFloatingMenu();
     }
 
     private void initAnimation() {
@@ -243,7 +245,9 @@ public class FamilyTreeActivity extends BaseAppCompatActivity {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.view_background:
-                    closeFloatingMenu();
+                    if (!FastClick.isFastClick()) {
+                        closeFloatingMenu();
+                    }
                     break;
                 case R.id.fab:
                     if (mMenuIsOpen) {
@@ -253,7 +257,6 @@ public class FamilyTreeActivity extends BaseAppCompatActivity {
                     }
                     break;
                 case R.id.cv_spouse:
-                    closeFloatingMenu();
                     if (TextUtils.isEmpty(mSelectFamily.getSpouseId())) {
                         toAddFamily(Config.TYPE_ADD_SPOUSE);
                     } else {
@@ -261,7 +264,6 @@ public class FamilyTreeActivity extends BaseAppCompatActivity {
                     }
                     break;
                 case R.id.cv_parent:
-                    closeFloatingMenu();
                     if (TextUtils.isEmpty(mSelectFamily.getFatherId()) || TextUtils.isEmpty(mSelectFamily.getMotherId())) {
                         toAddFamily(Config.TYPE_ADD_PARENT);
                     } else {
@@ -269,11 +271,9 @@ public class FamilyTreeActivity extends BaseAppCompatActivity {
                     }
                     break;
                 case R.id.cv_child:
-                    closeFloatingMenu();
                     toAddFamily(Config.TYPE_ADD_CHILD);
                     break;
                 case R.id.cv_brothers:
-                    closeFloatingMenu();
                     final String fatherId = mSelectFamily.getFatherId();
                     final String motherId = mSelectFamily.getMotherId();
                     final String name = mSelectFamily.getMemberName();

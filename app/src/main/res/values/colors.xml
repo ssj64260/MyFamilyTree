@@ -3,10 +3,15 @@
     <color name="colorPrimary">#009688</color>
     <color name="colorPrimaryDark">#00796B</color>
     <color name="colorAccent">#009688</color>
+    <color name="colorPrimaryLight">#B2DFDB</color>
+    <color name="colorPrimaryText">#212121</color>
+    <color name="colorSecondaryText">#757575</color>
+    <color name="colorDivider">#BDBDBD</color>
+    <color name="colorIconsText">#FFFFFF</color>
 
     <color name="half_transparent_white">#ccffffff</color>
     <color name="transparent">#00ffffff</color>
-    <color name="green_middle">#89CCBB</color>
     <color name="red_middle">#F6B78E</color>
     <color name="red">#ff0000</color>
+
 </resources>

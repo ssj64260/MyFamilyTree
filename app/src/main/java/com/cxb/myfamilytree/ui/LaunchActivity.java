@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 
 import com.cxb.myfamilytree.R;
 import com.cxb.myfamilytree.app.BaseAppCompatActivity;
@@ -14,7 +15,6 @@ import com.cxb.myfamilytree.config.Config;
 import com.cxb.myfamilytree.model.FamilyBean;
 import com.cxb.myfamilytree.utils.AppManager;
 import com.cxb.myfamilytree.widget.FamilyDBHelper;
-import com.cxb.myfamilytree.widget.dialog.DefaultAlertDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +27,7 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 import static com.cxb.myfamilytree.config.Config.REQUEST_TO_SETTING;
+import static com.cxb.myfamilytree.model.FamilyBean.SEX_MALE;
 
 
 /**
@@ -39,7 +40,7 @@ public class LaunchActivity extends BaseAppCompatActivity {
     private String[] permissions;
     private String[] errorTips;
 
-    private DefaultAlertDialog permissionDialog;//获取权限对话框
+    private AlertDialog mAlertDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +62,7 @@ public class LaunchActivity extends BaseAppCompatActivity {
                             myInfo.setMemberId(Config.MY_ID);
                             myInfo.setMemberName("我的姓名");
                             myInfo.setCall("我");
-                            myInfo.setSex("1");
+                            myInfo.setSex(SEX_MALE);
                             myInfo.setBirthday("");
                         }
                         dbHelper.save(myInfo);
@@ -114,25 +115,25 @@ public class LaunchActivity extends BaseAppCompatActivity {
     }
 
     private void showPermissionTipsDialog() {
-        if (permissionDialog == null) {
-            permissionDialog = new DefaultAlertDialog(this);
-            permissionDialog.setTitle(getString(R.string.permission_dialog_title));
-            permissionDialog.setConfirmButton(getString(R.string.permission_dialog_btn_setting), new DialogInterface.OnClickListener() {
+        if (mAlertDialog == null) {
+            mAlertDialog = new AlertDialog.Builder(this).create();
+            mAlertDialog.setTitle(getString(R.string.permission_dialog_title));
+            mAlertDialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.permission_dialog_btn_setting), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     finish();
                     AppManager.showInstalledAppDetails(LaunchActivity.this, getPackageName(), REQUEST_TO_SETTING);
                 }
             });
-            permissionDialog.setCancelButton(getString(R.string.permission_dialog_btn_cancel), new DialogInterface.OnClickListener() {
+            mAlertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.permission_dialog_btn_cancel), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     finish();
                 }
             });
         }
-        permissionDialog.setMessage(errorTips[permissionPosition]);
-        permissionDialog.showDialog();
+        mAlertDialog.setMessage(errorTips[permissionPosition]);
+        mAlertDialog.show();
     }
 
     @Override

@@ -24,7 +24,7 @@
         android:layout_height="45dp"
         android:background="@color/colorPrimary"
         android:text="确定"
-        android:textColor="@android:color/white"
+        android:textColor="@color/colorIconsText"
         android:textSize="14sp" />
 
 </LinearLayout>

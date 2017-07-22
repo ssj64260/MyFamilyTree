@@ -25,6 +25,9 @@ import com.cxb.myfamilytree.widget.dialog.DialogListener;
 import java.util.Calendar;
 import java.util.Date;
 
+import static com.cxb.myfamilytree.model.FamilyBean.SEX_FEMALE;
+import static com.cxb.myfamilytree.model.FamilyBean.SEX_MALE;
+
 /**
  * 家庭成员信息
  */
@@ -73,7 +76,7 @@ public class FamilyInfoActivity extends BaseAppCompatActivity {
         if (count == 2) {
             final RadioButton maleButton = (RadioButton) mGenderGroup.getChildAt(0);
             final RadioButton femaleButton = (RadioButton) mGenderGroup.getChildAt(1);
-            if ("1".equals(mSelectFamily.getSex())) {
+            if (SEX_MALE.equals(mSelectFamily.getSex())) {
                 maleButton.setChecked(true);
                 femaleButton.setChecked(false);
             } else {
@@ -121,7 +124,7 @@ public class FamilyInfoActivity extends BaseAppCompatActivity {
         final String name = mEditName.getText().toString();
         final String call = mEditCall.getText().toString();
         final String birthday = mEditBirthday.getText().toString();
-        final String gender = mGenderGroup.getCheckedRadioButtonId() == R.id.rb_female ? "2" : "1";
+        final String gender = mGenderGroup.getCheckedRadioButtonId() == R.id.rb_female ? SEX_FEMALE : SEX_MALE;
         if (TextUtils.isEmpty(name)) {
             Snackbar.make(mEditName, "真实姓名不能为空", Snackbar.LENGTH_LONG).show();
         } else if (TextUtils.isEmpty(call)) {
@@ -130,7 +133,7 @@ public class FamilyInfoActivity extends BaseAppCompatActivity {
             if (mAlertDialog == null) {
                 mAlertDialog = new AlertDialog.Builder(this).create();
                 mAlertDialog.setCanceledOnTouchOutside(false);
-                mAlertDialog.setCancelable(false);
+                mAlertDialog.setCancelable(true);
                 mAlertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "修改", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -143,7 +146,7 @@ public class FamilyInfoActivity extends BaseAppCompatActivity {
                         final String spouseId = mSelectFamily.getSpouseId();
                         if (!TextUtils.isEmpty(spouseId)) {
                             final FamilyBean spouseInfo = dbHelper.findFamilyById(spouseId);
-                            final String spouseGender = "1".equals(gender) ? "2" : "1";
+                            final String spouseGender = SEX_MALE.equals(gender) ? SEX_FEMALE : SEX_MALE;
                             spouseInfo.setSex(spouseGender);
                             dbHelper.save(spouseInfo);
                         }

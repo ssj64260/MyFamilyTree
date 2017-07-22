@@ -16,6 +16,9 @@ import java.util.List;
 @Table("FamilyBean")
 public class FamilyBean implements Parcelable {
 
+    public static final String SEX_MALE = "1";//1为男性
+    public static final String SEX_FEMALE = "2";//2为女性
+
     @PrimaryKey(AssignType.BY_MYSELF)
     private String memberId;//人员ID
     private String memberName;//姓名

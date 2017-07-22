@@ -34,13 +34,17 @@
             android:id="@+id/et_name"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:hint="真实姓名" />
+            android:hint="真实姓名"
+            android:maxLength="6"
+            android:maxLines="1" />
 
         <android.support.v7.widget.AppCompatEditText
             android:id="@+id/et_call"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:hint="称呼" />
+            android:hint="称呼"
+            android:maxLength="6"
+            android:maxLines="1" />
 
         <android.support.v7.widget.AppCompatEditText
             android:id="@+id/et_birthday"
