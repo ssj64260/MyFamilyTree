@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">我的家谱</string>
+
+    <string name="text_storage_permission_message">在设置-应用-%1$s-权限中开启存储权限，以正常使用该功能</string>
+
+    <!--LaunchActivity-->
+    <string name="permission_dialog_title">权限申请</string>
+    <string name="permission_dialog_btn_setting">去设置</string>
+    <string name="permission_dialog_btn_cancel">取消</string>
+
+    <!--menu-->
+    <string name="text_do_not_show_spouse">不显示底层配偶</string>
+    <string name="text_do_show_spouse">显示底层配偶</string>
+
+    <!--behavior-->
+    <string name="floatingbutton_up_behavior" translatable="false">com.cxb.myfamilytree.utils.FloatingButtonUpBehavior</string>
+</resources>

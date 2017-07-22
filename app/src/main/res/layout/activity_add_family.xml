@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:popupTheme="@style/AppTheme.PopupOverlay">
+
+
+        </android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v7.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingEnd="16dp"
+        android:paddingStart="16dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/et_name"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:hint="真实姓名" />
+
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/et_call"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:hint="称呼" />
+
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/et_birthday"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:focusable="false"
+            android:hint="出生日期" />
+
+        <RadioGroup
+            android:id="@+id/rg_gender"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal">
+
+            <android.support.v7.widget.AppCompatRadioButton
+                android:id="@+id/rb_male"
+                android:layout_width="80dp"
+                android:layout_height="match_parent"
+                android:checked="true"
+                android:text="男" />
+
+            <android.support.v7.widget.AppCompatRadioButton
+                android:id="@+id/rb_female"
+                android:layout_width="80dp"
+                android:layout_height="match_parent"
+                android:text="女" />
+        </RadioGroup>
+
+    </android.support.v7.widget.LinearLayoutCompat>
+
+</android.support.design.widget.CoordinatorLayout>
