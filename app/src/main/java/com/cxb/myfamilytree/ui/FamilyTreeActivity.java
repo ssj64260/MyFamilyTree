@@ -84,13 +84,13 @@ public class FamilyTreeActivity extends BaseAppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_show) {
-            boolean isShow = mFamilyTree.isBottomNeedSpouse();
+            boolean isShow = mFamilyTree.isShowBottomSpouse();
             if (isShow) {
                 item.setTitle(getString(R.string.text_do_show_spouse));
             } else {
                 item.setTitle(getString(R.string.text_do_not_show_spouse));
             }
-            mFamilyTree.setBottomNeedSpouse(!isShow);
+            mFamilyTree.setShowBottomSpouse(!isShow);
             mFamilyTree.drawFamilyTree(mSelectFamily);
             return true;
         }
@@ -143,6 +143,7 @@ public class FamilyTreeActivity extends BaseAppCompatActivity {
         mSelectFamily = dbHelper.findFamilyById(Config.MY_ID);
         dbHelper.closeDB();
 
+        mFamilyTree.setShowBottomSpouse(false);
         mFamilyTree.drawFamilyTree(mSelectFamily);
         mFamilyTree.setOnFamilyClickListener(familyClick);
     }

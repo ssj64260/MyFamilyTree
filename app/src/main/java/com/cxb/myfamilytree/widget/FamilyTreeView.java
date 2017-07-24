@@ -19,7 +19,6 @@ import com.bumptech.glide.Glide;
 import com.cxb.myfamilytree.R;
 import com.cxb.myfamilytree.model.FamilyBean;
 import com.cxb.myfamilytree.utils.DisplayUtil;
-import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,13 +41,11 @@ public class FamilyTreeView extends ViewGroup {
     private static final int SCROLL_WIDTH = 2;//移动超过2dp，响应滑动，否则属于点击
 
     private static final int ITEM_BACKGROUND_SELEDTED = R.drawable.shape_bg_select;//选中项背景
-    private static final int ITEM_BACKGROUND_MALE = R.drawable.shape_bg_male;//男性item背景
-    private static final int ITEM_BACKGROUND_FEMALE = R.drawable.shape_bg_female;//女性item背景
-    private static final int AVATAR_MALE = R.drawable.ic_male_avatar;//男性默认头像
-    private static final int AVATAR_FEMALE = R.drawable.ic_female_avatar;//女性默认头像
+    private static final int AVATAR_MALE = R.drawable.ic_avatar_male;//男性默认头像
+    private static final int AVATAR_FEMALE = R.drawable.ic_avatar_female;//女性默认头像
     private static final int TEXT_BACKGROUND_DEFAULT = R.color.transparent;//文字背景默认颜色
-    private static final int TEXT_BACKGROUND_MALE = R.color.colorPrimaryLight;//男性文字背景颜色
-    private static final int TEXT_BACKGROUND_FEMALE = R.color.red_middle;//女性文字背景颜色
+    private static final int TEXT_BACKGROUND_MALE = R.color.male_text_bg_color;//男性文字背景颜色
+    private static final int TEXT_BACKGROUND_FEMALE = R.color.female_text_bg_color;//女性文字背景颜色
 
     private OnFamilyClickListener mOnFamilyClickListener;
 
@@ -645,7 +642,6 @@ public class FamilyTreeView extends ViewGroup {
             familyView.setBackgroundResource(ITEM_BACKGROUND_SELEDTED);
             llBackground.setBackgroundResource(SEX_FEMALE.equals(sex) ? TEXT_BACKGROUND_FEMALE : TEXT_BACKGROUND_MALE);
         } else {
-            familyView.setBackgroundResource(SEX_FEMALE.equals(sex) ? ITEM_BACKGROUND_FEMALE : ITEM_BACKGROUND_MALE);
             llBackground.setBackgroundResource(TEXT_BACKGROUND_DEFAULT);
         }
 
@@ -924,13 +920,11 @@ public class FamilyTreeView extends ViewGroup {
         this.mOnFamilyClickListener = onFamilyClickListener;
     }
 
-    public void setBottomNeedSpouse(boolean mBottomNeedSpouse) {
-        mDBHelper.setmInquirySpouse(mBottomNeedSpouse);
-        mCurrentWidth = (mShowWidthPX - mItemWidthPX) / 2;
-        mCurrentHeight = (mShowHeightPX - mItemHeightPX) / 2;
+    public void setShowBottomSpouse(boolean showBottomSpouse) {
+        mDBHelper.setInquirySpouse(showBottomSpouse);
     }
 
-    public boolean isBottomNeedSpouse() {
+    public boolean isShowBottomSpouse() {
         return mDBHelper.ismInquirySpouse();
     }
 
@@ -949,10 +943,6 @@ public class FamilyTreeView extends ViewGroup {
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-//                mCurrentX = getScrollX();
-//                mCurrentY = getScrollY();
-//                mLastTouchX = (int) event.getX();
-//                mLastTouchY = (int) event.getY();
                 break;
             case MotionEvent.ACTION_MOVE:
                 final int currentTouchX = (int) event.getX();
@@ -969,7 +959,6 @@ public class FamilyTreeView extends ViewGroup {
                 mLastTouchY = currentTouchY;
                 break;
             case MotionEvent.ACTION_UP:
-                Logger.d("scrollX = " + getScrollX() + "\nscrollY = " + getScrollY());
                 break;
         }
         return true;

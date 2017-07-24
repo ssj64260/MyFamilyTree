@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rootview"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -32,7 +33,7 @@
         android:id="@+id/view_background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/half_transparent_white"
+        android:background="@color/alpha_80percent_white"
         android:visibility="gone" />
 
     <LinearLayout
@@ -43,7 +44,9 @@
         android:gravity="center"
         android:orientation="vertical"
         android:visibility="invisible"
-        app:layout_behavior="@string/floatingbutton_up_behavior">
+        app:layout_behavior="@string/floatingbutton_up_behavior"
+        tools:layout_marginBottom="72dp"
+        tools:visibility="visible">
 
         <android.support.v7.widget.CardView
             android:id="@+id/cv_brothers"

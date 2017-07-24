@@ -30,8 +30,8 @@ public class FamilyDBHelper {
         liteOrm.setDebugged(DEBUGGABLE);
     }
 
-    public void setmInquirySpouse(boolean mInquirySpouse) {
-        this.mInquirySpouse = mInquirySpouse;
+    public void setInquirySpouse(boolean inquirySpouse) {
+        this.mInquirySpouse = inquirySpouse;
     }
 
     public boolean ismInquirySpouse() {

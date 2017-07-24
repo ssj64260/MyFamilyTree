@@ -171,61 +171,44 @@ public class AddFamilyActivity extends BaseAppCompatActivity {
             final String familySex = family.getSex();
             final String fatherId = mSelectFamily.getFatherId();
             final String motherId = mSelectFamily.getMotherId();
-            if (SEX_MALE.equals(familySex)) {
-                if (TextUtils.isEmpty(fatherId)) {
-                    final FamilyDBHelper dbHelper = new FamilyDBHelper(this);
-                    family.setSpouseId(motherId);
-                    dbHelper.save(family);
-
+            final boolean isAddMale = SEX_MALE.equals(familySex);
+            if (isAddMale && !TextUtils.isEmpty(fatherId)) {
+                Snackbar.make(mEditCall, "已有父亲", Snackbar.LENGTH_LONG).show();
+            } else if (!isAddMale && !TextUtils.isEmpty(motherId)) {
+                Snackbar.make(mEditCall, "已有母亲", Snackbar.LENGTH_LONG).show();
+            } else {
+                final FamilyDBHelper dbHelper = new FamilyDBHelper(this);
+                final String parentId;
+                final List<FamilyBean> children;
+                if (isAddMale) {
+                    parentId = motherId;
                     mSelectFamily.setFatherId(familyId);
-                    dbHelper.save(mSelectFamily);
-
-                    FamilyBean mother = dbHelper.findFamilyById(motherId);
-                    if (mother != null) {
-                        mother.setSpouseId(familyId);
-                        dbHelper.save(mother);
-                    }
-
-                    final List<FamilyBean> children = dbHelper.findFamiliesByMotherId(motherId, "");
+                    children = dbHelper.findFamiliesByMotherId(motherId, "");
                     for (FamilyBean child : children) {
                         child.setFatherId(familyId);
                     }
-                    dbHelper.save(children);
-
-                    dbHelper.closeDB();
-                    setResult(RESULT_OK);
-                    onBackPressed();
                 } else {
-                    Snackbar.make(mEditCall, "已有父亲", Snackbar.LENGTH_LONG).show();
-                }
-            } else {
-                if (TextUtils.isEmpty(motherId)) {
-                    final FamilyDBHelper dbHelper = new FamilyDBHelper(this);
-
-                    family.setSpouseId(fatherId);
-                    dbHelper.save(family);
-
+                    parentId = fatherId;
                     mSelectFamily.setMotherId(familyId);
-                    dbHelper.save(mSelectFamily);
-
-                    FamilyBean father = dbHelper.findFamilyById(fatherId);
-                    if (father != null) {
-                        father.setSpouseId(familyId);
-                        dbHelper.save(father);
-                    }
-
-                    final List<FamilyBean> children = dbHelper.findFamiliesByFatherId(fatherId, "");
+                    children = dbHelper.findFamiliesByFatherId(fatherId, "");
                     for (FamilyBean child : children) {
                         child.setMotherId(familyId);
                     }
-                    dbHelper.save(children);
-
-                    dbHelper.closeDB();
-                    setResult(RESULT_OK);
-                    onBackPressed();
-                } else {
-                    Snackbar.make(mEditCall, "已有母亲", Snackbar.LENGTH_LONG).show();
                 }
+                family.setSpouseId(parentId);
+                dbHelper.save(family);
+                dbHelper.save(mSelectFamily);
+
+                FamilyBean parent = dbHelper.findFamilyById(parentId);
+                if (parent != null) {
+                    parent.setSpouseId(familyId);
+                    dbHelper.save(parent);
+                }
+
+                dbHelper.save(children);
+                dbHelper.closeDB();
+                setResult(RESULT_OK);
+                onBackPressed();
             }
         } else if (Config.TYPE_ADD_CHILD.equals(mAddType)) {
             final String selectFamilySex = mSelectFamily.getSex();
