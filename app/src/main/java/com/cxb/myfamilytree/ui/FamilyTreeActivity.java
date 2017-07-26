@@ -3,9 +3,7 @@ package com.cxb.myfamilytree.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -17,7 +15,9 @@ import android.view.animation.AnticipateOvershootInterpolator;
 import android.view.animation.OvershootInterpolator;
 import android.view.animation.RotateAnimation;
 import android.view.animation.ScaleAnimation;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.cxb.myfamilytree.R;
 import com.cxb.myfamilytree.app.BaseAppCompatActivity;
@@ -43,11 +43,11 @@ public class FamilyTreeActivity extends BaseAppCompatActivity implements IFamily
 
     private View mBackground;
     private LinearLayout mButtons;
-    private FloatingActionButton mFloatingButton;
-    private CardView mAddSpouse;
-    private CardView mAddParent;
-    private CardView mAddChild;
-    private CardView mAddBrothers;
+    private ImageButton mFloatingButton;
+    private TextView mAddSpouse;
+    private TextView mAddParent;
+    private TextView mAddChild;
+    private TextView mAddBrothers;
 
     private FamilyBean mSelectFamily;
     private boolean mMenuIsOpen = false;
@@ -127,11 +127,11 @@ public class FamilyTreeActivity extends BaseAppCompatActivity implements IFamily
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mBackground = findViewById(R.id.view_background);
         mButtons = (LinearLayout) findViewById(R.id.ll_buttons);
-        mFloatingButton = (FloatingActionButton) findViewById(R.id.fab);
-        mAddSpouse = (CardView) findViewById(R.id.cv_spouse);
-        mAddParent = (CardView) findViewById(R.id.cv_parent);
-        mAddChild = (CardView) findViewById(R.id.cv_child);
-        mAddBrothers = (CardView) findViewById(R.id.cv_brothers);
+        mFloatingButton = (ImageButton) findViewById(R.id.ib_add);
+        mAddSpouse = (TextView) findViewById(R.id.tv_spouse);
+        mAddParent = (TextView) findViewById(R.id.tv_parent);
+        mAddChild = (TextView) findViewById(R.id.tv_child);
+        mAddBrothers = (TextView) findViewById(R.id.tv_brothers);
     }
 
     private void setData() {
@@ -252,31 +252,31 @@ public class FamilyTreeActivity extends BaseAppCompatActivity implements IFamily
                         closeFloatingMenu();
                     }
                     break;
-                case R.id.fab:
+                case R.id.ib_add:
                     if (mMenuIsOpen) {
                         closeFloatingMenu();
                     } else {
                         openFloatingMenu();
                     }
                     break;
-                case R.id.cv_spouse:
+                case R.id.tv_spouse:
                     if (TextUtils.isEmpty(mSelectFamily.getSpouseId())) {
                         toAddFamily(Config.TYPE_ADD_SPOUSE);
                     } else {
                         Snackbar.make(mRootView, "已有配偶", Snackbar.LENGTH_LONG).show();
                     }
                     break;
-                case R.id.cv_parent:
+                case R.id.tv_parent:
                     if (TextUtils.isEmpty(mSelectFamily.getFatherId()) || TextUtils.isEmpty(mSelectFamily.getMotherId())) {
                         toAddFamily(Config.TYPE_ADD_PARENT);
                     } else {
                         Snackbar.make(mRootView, "已有父亲和母亲", Snackbar.LENGTH_LONG).show();
                     }
                     break;
-                case R.id.cv_child:
+                case R.id.tv_child:
                     toAddFamily(Config.TYPE_ADD_CHILD);
                     break;
-                case R.id.cv_brothers:
+                case R.id.tv_brothers:
                     final String fatherId = mSelectFamily.getFatherId();
                     final String motherId = mSelectFamily.getMotherId();
                     final String name = mSelectFamily.getMemberName();

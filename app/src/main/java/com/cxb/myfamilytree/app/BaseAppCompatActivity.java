@@ -1,6 +1,7 @@
 package com.cxb.myfamilytree.app;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -32,10 +33,11 @@ public class BaseAppCompatActivity extends AppCompatActivity {
     private void setStatusBar() {
         Window window = getWindow();
         // 状态栏透明
-        window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        }
         // 导航栏透明
 //        window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-        window.getDecorView().setFitsSystemWindows(true);
     }
 
     protected void hideKeyboard() {

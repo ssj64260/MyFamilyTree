@@ -41,100 +41,67 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
+        android:layout_marginBottom="72dp"
         android:gravity="center"
         android:orientation="vertical"
         android:visibility="invisible"
-        app:layout_behavior="@string/floatingbutton_up_behavior"
-        tools:layout_marginBottom="72dp"
         tools:visibility="visible">
 
-        <android.support.v7.widget.CardView
-            android:id="@+id/cv_brothers"
+        <TextView
+            android:id="@+id/tv_brothers"
             android:layout_width="56dp"
             android:layout_height="40dp"
             android:layout_marginTop="16dp"
-            app:cardBackgroundColor="@color/colorPrimary"
-            app:cardCornerRadius="2dp"
-            app:cardElevation="4dp">
+            android:background="@color/colorPrimary"
+            android:gravity="center"
+            android:text="兄弟姐妹"
+            android:textColor="@color/colorIconsText"
+            android:textSize="14sp" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="兄弟姐妹"
-                android:textColor="@color/colorIconsText"
-                android:textSize="14sp" />
-
-        </android.support.v7.widget.CardView>
-
-        <android.support.v7.widget.CardView
-            android:id="@+id/cv_child"
+        <TextView
+            android:id="@+id/tv_child"
             android:layout_width="56dp"
             android:layout_height="40dp"
             android:layout_marginTop="16dp"
-            app:cardBackgroundColor="@color/colorPrimary"
-            app:cardCornerRadius="2dp"
-            app:cardElevation="4dp">
+            android:background="@color/colorPrimary"
+            android:gravity="center"
+            android:text="子女"
+            android:textColor="@color/colorIconsText"
+            android:textSize="14sp" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="子女"
-                android:textColor="@color/colorIconsText"
-                android:textSize="14sp" />
-
-        </android.support.v7.widget.CardView>
-
-        <android.support.v7.widget.CardView
-            android:id="@+id/cv_parent"
+        <TextView
+            android:id="@+id/tv_parent"
             android:layout_width="56dp"
             android:layout_height="40dp"
             android:layout_marginTop="16dp"
-            app:cardBackgroundColor="@color/colorPrimary"
-            app:cardCornerRadius="2dp"
-            app:cardElevation="4dp">
+            android:background="@color/colorPrimary"
+            android:gravity="center"
+            android:text="父母"
+            android:textColor="@color/colorIconsText"
+            android:textSize="14sp" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="父母"
-                android:textColor="@color/colorIconsText"
-                android:textSize="14sp" />
-
-        </android.support.v7.widget.CardView>
-
-
-        <android.support.v7.widget.CardView
-            android:id="@+id/cv_spouse"
+        <TextView
+            android:id="@+id/tv_spouse"
             android:layout_width="56dp"
             android:layout_height="40dp"
             android:layout_margin="16dp"
-            app:cardBackgroundColor="@color/colorPrimary"
-            app:cardCornerRadius="2dp"
-            app:cardElevation="4dp">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="配偶"
-                android:textColor="@color/colorIconsText"
-                android:textSize="14sp" />
-
-        </android.support.v7.widget.CardView>
+            android:background="@color/colorPrimary"
+            android:gravity="center"
+            android:text="配偶"
+            android:textColor="@color/colorIconsText"
+            android:textSize="14sp" />
 
     </LinearLayout>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
+    <ImageButton
+        android:id="@+id/ib_add"
         android:layout_width="56dp"
         android:layout_height="56dp"
         android:layout_gravity="bottom|end"
         android:layout_marginBottom="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
-        app:srcCompat="@drawable/ic_action_add" />
+        android:background="@drawable/shape_bg_floating_button"
+        android:src="@drawable/ic_action_add" />
 
 </android.support.design.widget.CoordinatorLayout>

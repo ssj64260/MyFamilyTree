@@ -2,9 +2,10 @@ package com.cxb.myfamilytree.utils;
 
 import android.content.Context;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 /**
@@ -19,12 +20,20 @@ public class FloatingButtonUpBehavior extends CoordinatorLayout.Behavior<LinearL
 
     @Override
     public boolean layoutDependsOn(CoordinatorLayout parent, LinearLayout child, View dependency) {
-        return dependency instanceof FloatingActionButton;
+        return dependency instanceof ImageButton;
     }
 
     @Override
     public boolean onDependentViewChanged(CoordinatorLayout parent, LinearLayout child, View dependency) {
-        int top = dependency.getTop() - child.getHeight();
+        final int margin;
+        if (dependency.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
+            ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) dependency.getLayoutParams();
+            margin = layoutParams.topMargin;
+        } else {
+            margin = 0;
+        }
+
+        final int top = dependency.getTop() - child.getHeight() - margin;
         child.setY(top);
         return true;
     }

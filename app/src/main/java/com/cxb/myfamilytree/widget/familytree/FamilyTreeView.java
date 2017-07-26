@@ -40,12 +40,10 @@ public class FamilyTreeView extends ViewGroup {
     private static final int LINE_WIDTH_DP = 1;//连线宽度2dp
     private static final int SCROLL_WIDTH = 2;//移动超过2dp，响应滑动，否则属于点击
 
-    private static final int ITEM_BACKGROUND_SELEDTED = R.drawable.shape_bg_select;//选中项背景
+    private static final int BACKGROUND_NORMAL = R.drawable.shape_bg_normal;//默认背景
+    private static final int BACKGROUND_SELEDTED = R.drawable.shape_bg_select;//选中项背景
     private static final int AVATAR_MALE = R.drawable.ic_avatar_male;//男性默认头像
     private static final int AVATAR_FEMALE = R.drawable.ic_avatar_female;//女性默认头像
-    private static final int TEXT_BACKGROUND_DEFAULT = R.color.transparent;//文字背景默认颜色
-    private static final int TEXT_BACKGROUND_MALE = R.color.male_text_bg_color;//男性文字背景颜色
-    private static final int TEXT_BACKGROUND_FEMALE = R.color.female_text_bg_color;//女性文字背景颜色
 
     private OnFamilyClickListener mOnFamilyClickListener;
 
@@ -610,16 +608,13 @@ public class FamilyTreeView extends ViewGroup {
 
     private View createFamilyView(FamilyBean family, int left, int top) {
         final View familyView = LayoutInflater.from(getContext()).inflate(R.layout.item_family, this, false);
-        familyView.getLayoutParams().width = mItemWidthPX;
-        familyView.getLayoutParams().height = mItemHeightPX;
+        familyView.setLayoutParams(new LayoutParams(mItemWidthPX, mItemHeightPX));
         familyView.setLeft(left);
         familyView.setTop(top);
         familyView.setTag(family);
 
         final ImageView ivAvatar = (ImageView) familyView.findViewById(R.id.iv_avatar);
-        ivAvatar.getLayoutParams().height = mItemWidthPX;
-
-        final LinearLayout llBackground = (LinearLayout) familyView.findViewById(R.id.ll_background);
+        ivAvatar.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, mItemWidthPX));
 
         final TextView tvName = (TextView) familyView.findViewById(R.id.tv_name);
         tvName.setTextSize(NAME_TEXT_SIZE_SP);
@@ -639,10 +634,9 @@ public class FamilyTreeView extends ViewGroup {
                 .dontAnimate()
                 .into(ivAvatar);
         if (family.isSelect()) {
-            familyView.setBackgroundResource(ITEM_BACKGROUND_SELEDTED);
-            llBackground.setBackgroundResource(SEX_FEMALE.equals(sex) ? TEXT_BACKGROUND_FEMALE : TEXT_BACKGROUND_MALE);
+            familyView.setBackgroundResource(BACKGROUND_SELEDTED);
         } else {
-            llBackground.setBackgroundResource(TEXT_BACKGROUND_DEFAULT);
+            familyView.setBackgroundResource(BACKGROUND_NORMAL);
         }
 
         familyView.setOnClickListener(click);
