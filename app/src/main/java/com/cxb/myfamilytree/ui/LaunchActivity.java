@@ -12,29 +12,22 @@ import android.support.v7.app.AlertDialog;
 import com.cxb.myfamilytree.R;
 import com.cxb.myfamilytree.app.BaseAppCompatActivity;
 import com.cxb.myfamilytree.config.Config;
-import com.cxb.myfamilytree.model.FamilyBean;
+import com.cxb.myfamilytree.presenter.ILaunchPresenter;
+import com.cxb.myfamilytree.presenter.LaunchPresenter;
 import com.cxb.myfamilytree.utils.AppManager;
-import com.cxb.myfamilytree.widget.FamilyDBHelper;
+import com.cxb.myfamilytree.view.ILaunchView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
-
 import static com.cxb.myfamilytree.config.Config.REQUEST_TO_SETTING;
-import static com.cxb.myfamilytree.model.FamilyBean.SEX_MALE;
 
 
 /**
  * 启动页面
  */
 
-public class LaunchActivity extends BaseAppCompatActivity {
+public class LaunchActivity extends BaseAppCompatActivity implements ILaunchView {
 
     private int permissionPosition = 0;//当前请求权限位置
     private String[] permissions;
@@ -42,44 +35,27 @@ public class LaunchActivity extends BaseAppCompatActivity {
 
     private AlertDialog mAlertDialog;
 
+    private ILaunchPresenter mPresenter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mPresenter = new LaunchPresenter();
+        mPresenter.attachView(this);
 
         checkPermission();
 
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mPresenter.detachView();
+    }
+
     private void initData() {
-        final FamilyDBHelper dbHelper = new FamilyDBHelper(this);
-        Observable
-                .create(new ObservableOnSubscribe<FamilyBean>() {
-                    @Override
-                    public void subscribe(@io.reactivex.annotations.NonNull ObservableEmitter<FamilyBean> e) throws Exception {
-                        FamilyBean myInfo = dbHelper.findFamilyById(Config.MY_ID);
-                        if (myInfo == null) {
-                            myInfo = new FamilyBean();
-                            myInfo.setMemberId(Config.MY_ID);
-                            myInfo.setMemberName("我的姓名");
-                            myInfo.setCall("我");
-                            myInfo.setSex(SEX_MALE);
-                            myInfo.setBirthday("");
-                        }
-                        dbHelper.save(myInfo);
-                        e.onNext(myInfo);
-                        dbHelper.closeDB();
-                        e.onComplete();
-                    }
-                })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<FamilyBean>() {
-                    @Override
-                    public void accept(@io.reactivex.annotations.NonNull FamilyBean familyBean) throws Exception {
-                        startActivity(new Intent(LaunchActivity.this, FamilyTreeActivity.class));
-                        finish();
-                    }
-                });
+        mPresenter.getFamily(Config.MY_ID);
     }
 
     private void checkPermission() {
@@ -172,4 +148,9 @@ public class LaunchActivity extends BaseAppCompatActivity {
         }
     }
 
+    @Override
+    public void startMainActivity() {
+        startActivity(new Intent(LaunchActivity.this, FamilyTreeActivity.class));
+        finish();
+    }
 }

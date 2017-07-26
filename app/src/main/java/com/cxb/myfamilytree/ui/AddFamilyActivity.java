@@ -1,29 +1,34 @@
 package com.cxb.myfamilytree.ui;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.cxb.myfamilytree.R;
 import com.cxb.myfamilytree.app.BaseAppCompatActivity;
 import com.cxb.myfamilytree.config.Config;
 import com.cxb.myfamilytree.model.FamilyBean;
+import com.cxb.myfamilytree.presenter.AddFamilyPresenter;
+import com.cxb.myfamilytree.presenter.IAddFamilyPresenter;
 import com.cxb.myfamilytree.utils.DateTimeUtils;
-import com.cxb.myfamilytree.widget.FamilyDBHelper;
+import com.cxb.myfamilytree.view.IAddFamilyView;
 import com.cxb.myfamilytree.widget.dialog.DateTimePickerDialog;
 import com.cxb.myfamilytree.widget.dialog.DialogListener;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 import static com.cxb.myfamilytree.model.FamilyBean.SEX_FEMALE;
 import static com.cxb.myfamilytree.model.FamilyBean.SEX_MALE;
@@ -32,11 +37,12 @@ import static com.cxb.myfamilytree.model.FamilyBean.SEX_MALE;
  * 添加家庭成员
  */
 
-public class AddFamilyActivity extends BaseAppCompatActivity {
+public class AddFamilyActivity extends BaseAppCompatActivity implements IAddFamilyView {
 
     public static final String ADD_TYPE = "add_type";//添加类型
     public static final String FAMILY_INFO = "family_info";//家人信息
 
+    private CoordinatorLayout mRootView;
     private Toolbar mToolBar;
     private EditText mEditName;
     private EditText mEditCall;
@@ -44,9 +50,12 @@ public class AddFamilyActivity extends BaseAppCompatActivity {
     private RadioGroup mGenderGroup;
 
     private DateTimePickerDialog mDatePicker;
+    private AlertDialog mAlertDialog;
 
     private FamilyBean mSelectFamily;
     private String mAddType;
+
+    private IAddFamilyPresenter mPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +67,20 @@ public class AddFamilyActivity extends BaseAppCompatActivity {
 
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mPresenter.detachView();
+        if (mDatePicker != null) {
+            mDatePicker.dismiss();
+        }
+    }
+
     private void initView() {
+        mPresenter = new AddFamilyPresenter();
+        mPresenter.attachView(this);
+
+        mRootView = (CoordinatorLayout) findViewById(R.id.rootview);
         mToolBar = (Toolbar) findViewById(R.id.toolbar);
         mEditName = (EditText) findViewById(R.id.et_name);
         mEditCall = (EditText) findViewById(R.id.et_call);
@@ -83,6 +105,24 @@ public class AddFamilyActivity extends BaseAppCompatActivity {
         } else if (Config.TYPE_ADD_BROTHERS_AND_SISTERS.equals(mAddType)) {
             mToolBar.setTitle("添加兄弟姐妹");
             mToolBar.setSubtitle("添加" + familyName + "的兄弟姐妹");
+        } else {
+            mToolBar.setTitle("亲人信息");
+            mEditName.setText(mSelectFamily.getMemberName());
+            mEditCall.setText(mSelectFamily.getCall());
+            mEditBirthday.setText(mSelectFamily.getBirthday());
+
+            final int count = mGenderGroup.getChildCount();
+            if (count == 2) {
+                final RadioButton maleButton = (RadioButton) mGenderGroup.getChildAt(0);
+                final RadioButton femaleButton = (RadioButton) mGenderGroup.getChildAt(1);
+                if (SEX_MALE.equals(mSelectFamily.getSex())) {
+                    maleButton.setChecked(true);
+                    femaleButton.setChecked(false);
+                } else {
+                    maleButton.setChecked(false);
+                    femaleButton.setChecked(true);
+                }
+            }
         }
 
         setSupportActionBar(mToolBar);
@@ -119,119 +159,63 @@ public class AddFamilyActivity extends BaseAppCompatActivity {
         mDatePicker.show();
     }
 
-    private void doAddFamily() {
+    private void doConfirm() {
         final String name = mEditName.getText().toString();
         final String call = mEditCall.getText().toString();
         final String birthday = mEditBirthday.getText().toString();
         final String gender = mGenderGroup.getCheckedRadioButtonId() == R.id.rb_female ? SEX_FEMALE : SEX_MALE;
         if (TextUtils.isEmpty(name)) {
-            Snackbar.make(mEditName, "真实姓名不能为空", Snackbar.LENGTH_LONG).show();
+            showToast("真实姓名不能为空");
         } else if (TextUtils.isEmpty(call)) {
-            Snackbar.make(mEditCall, "称呼不能为空", Snackbar.LENGTH_LONG).show();
+            showToast("称呼不能为空");
         } else {
-            FamilyBean family = new FamilyBean();
-            family.setMemberId(String.valueOf(System.currentTimeMillis()));
-            family.setMemberName(name);
-            family.setCall(call);
-            family.setBirthday(birthday);
-            family.setSex(gender);
-            saveToDatabase(family);
-        }
-    }
-
-    private void saveToDatabase(FamilyBean family) {
-        if (Config.TYPE_ADD_SPOUSE.equals(mAddType)) {
-            final String selectFamilyId = mSelectFamily.getMemberId();
-            final String selectFamilySex = mSelectFamily.getSex();
-            final String familyId = family.getMemberId();
-            final String familySex = family.getSex();
-            if (familySex.equals(selectFamilySex)) {
-                Snackbar.make(mEditCall, "不允许同性配偶", Snackbar.LENGTH_LONG).show();
-            } else {
-                final FamilyDBHelper dbHelper = new FamilyDBHelper(this);
-                family.setSpouseId(selectFamilyId);
-                mSelectFamily.setSpouseId(familyId);
-                dbHelper.save(family);
-                dbHelper.save(mSelectFamily);
-                final List<FamilyBean> children = dbHelper.getChildren(mSelectFamily, selectFamilyId);
-                for (FamilyBean child : children) {
-                    if (SEX_MALE.equals(familySex)) {
-                        child.setFatherId(familyId);
-                    } else {
-                        child.setMotherId(familyId);
-                    }
+            if (TextUtils.isEmpty(mAddType)) {
+                if (mAlertDialog == null) {
+                    mAlertDialog = new AlertDialog.Builder(this).create();
+                    mAlertDialog.setCanceledOnTouchOutside(false);
+                    mAlertDialog.setCancelable(true);
+                    mAlertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "修改", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            final boolean isChangeGender = !gender.equals(mSelectFamily.getSex());
+                            mSelectFamily.setMemberName(name);
+                            mSelectFamily.setCall(call);
+                            mSelectFamily.setBirthday(birthday);
+                            mSelectFamily.setSex(gender);
+                            mPresenter.updateFamilyInfo(mSelectFamily, isChangeGender);
+                        }
+                    });
+                    mAlertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "取消", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
                 }
-                dbHelper.save(children);
-                dbHelper.closeDB();
-                setResult(RESULT_OK);
-                onBackPressed();
-            }
-        } else if (Config.TYPE_ADD_PARENT.equals(mAddType)) {
-            final String familyId = family.getMemberId();
-            final String familySex = family.getSex();
-            final String fatherId = mSelectFamily.getFatherId();
-            final String motherId = mSelectFamily.getMotherId();
-            final boolean isAddMale = SEX_MALE.equals(familySex);
-            if (isAddMale && !TextUtils.isEmpty(fatherId)) {
-                Snackbar.make(mEditCall, "已有父亲", Snackbar.LENGTH_LONG).show();
-            } else if (!isAddMale && !TextUtils.isEmpty(motherId)) {
-                Snackbar.make(mEditCall, "已有母亲", Snackbar.LENGTH_LONG).show();
-            } else {
-                final FamilyDBHelper dbHelper = new FamilyDBHelper(this);
-                final String parentId;
-                final List<FamilyBean> children;
-                if (isAddMale) {
-                    parentId = motherId;
-                    mSelectFamily.setFatherId(familyId);
-                    children = dbHelper.findFamiliesByMotherId(motherId, "");
-                    for (FamilyBean child : children) {
-                        child.setFatherId(familyId);
-                    }
+
+                if (TextUtils.isEmpty(mSelectFamily.getSpouseId()) || gender.equals(mSelectFamily.getSex())) {
+                    mAlertDialog.setMessage("是否要修改该亲人的信息？");
                 } else {
-                    parentId = fatherId;
-                    mSelectFamily.setMotherId(familyId);
-                    children = dbHelper.findFamiliesByFatherId(fatherId, "");
-                    for (FamilyBean child : children) {
-                        child.setMotherId(familyId);
-                    }
+                    mAlertDialog.setMessage("更改性别后，配偶的性别也相应更改，是否继续修改该亲人的信息？");
                 }
-                family.setSpouseId(parentId);
-                dbHelper.save(family);
-                dbHelper.save(mSelectFamily);
-
-                FamilyBean parent = dbHelper.findFamilyById(parentId);
-                if (parent != null) {
-                    parent.setSpouseId(familyId);
-                    dbHelper.save(parent);
-                }
-
-                dbHelper.save(children);
-                dbHelper.closeDB();
-                setResult(RESULT_OK);
-                onBackPressed();
-            }
-        } else if (Config.TYPE_ADD_CHILD.equals(mAddType)) {
-            final String selectFamilySex = mSelectFamily.getSex();
-            if (SEX_MALE.equals(selectFamilySex)) {
-                family.setFatherId(mSelectFamily.getMemberId());
-                family.setMotherId(mSelectFamily.getSpouseId());
+                mAlertDialog.show();
             } else {
-                family.setFatherId(mSelectFamily.getSpouseId());
-                family.setMotherId(mSelectFamily.getMemberId());
+                final FamilyBean family = new FamilyBean();
+                family.setMemberId(String.valueOf(System.currentTimeMillis()));
+                family.setMemberName(name);
+                family.setCall(call);
+                family.setBirthday(birthday);
+                family.setSex(gender);
+                if (Config.TYPE_ADD_SPOUSE.equals(mAddType)) {
+                    mPresenter.addSpouse(mSelectFamily, family);
+                } else if (Config.TYPE_ADD_PARENT.equals(mAddType)) {
+                    mPresenter.addParent(mSelectFamily, family);
+                } else if (Config.TYPE_ADD_CHILD.equals(mAddType)) {
+                    mPresenter.addChild(mSelectFamily, family);
+                } else if (Config.TYPE_ADD_BROTHERS_AND_SISTERS.equals(mAddType)) {
+                    mPresenter.addBrothersAndSisters(mSelectFamily, family);
+                }
             }
-            final FamilyDBHelper dbHelper = new FamilyDBHelper(this);
-            dbHelper.save(family);
-            dbHelper.closeDB();
-            setResult(RESULT_OK);
-            onBackPressed();
-        } else if (Config.TYPE_ADD_BROTHERS_AND_SISTERS.equals(mAddType)) {
-            family.setFatherId(mSelectFamily.getFatherId());
-            family.setMotherId(mSelectFamily.getMotherId());
-            final FamilyDBHelper dbHelper = new FamilyDBHelper(this);
-            dbHelper.save(family);
-            dbHelper.closeDB();
-            setResult(RESULT_OK);
-            onBackPressed();
         }
     }
 
@@ -255,7 +239,7 @@ public class AddFamilyActivity extends BaseAppCompatActivity {
                 break;
             case R.id.action_confirm:
                 hideKeyboard();
-                doAddFamily();
+                doConfirm();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -267,5 +251,26 @@ public class AddFamilyActivity extends BaseAppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+    @Override
+    public void showProgress() {
 
+    }
+
+    @Override
+    public void hideProgress() {
+
+    }
+
+    @Override
+    public void setResultAndFinish() {
+        Intent intent = new Intent();
+        intent.putExtra(FAMILY_INFO, mSelectFamily.getMemberId());
+        setResult(RESULT_OK, intent);
+        onBackPressed();
+    }
+
+    @Override
+    public void showToast(String toast) {
+        Snackbar.make(mRootView, toast, Snackbar.LENGTH_LONG).show();
+    }
 }

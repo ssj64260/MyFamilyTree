@@ -1,4 +1,4 @@
-package com.cxb.myfamilytree.widget;
+package com.cxb.myfamilytree.widget.familytree;
 
 
 import com.cxb.myfamilytree.model.FamilyBean;

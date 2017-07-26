@@ -23,16 +23,17 @@ import com.cxb.myfamilytree.R;
 import com.cxb.myfamilytree.app.BaseAppCompatActivity;
 import com.cxb.myfamilytree.config.Config;
 import com.cxb.myfamilytree.model.FamilyBean;
+import com.cxb.myfamilytree.presenter.FamilyPresenter;
 import com.cxb.myfamilytree.utils.FastClick;
-import com.cxb.myfamilytree.widget.FamilyDBHelper;
-import com.cxb.myfamilytree.widget.FamilyTreeView;
-import com.cxb.myfamilytree.widget.OnFamilyClickListener;
+import com.cxb.myfamilytree.view.IFamilyView;
+import com.cxb.myfamilytree.widget.familytree.FamilyTreeView;
+import com.cxb.myfamilytree.widget.familytree.OnFamilyClickListener;
 
 /**
  * 仿亲友+
  */
 
-public class FamilyTreeActivity extends BaseAppCompatActivity {
+public class FamilyTreeActivity extends BaseAppCompatActivity implements IFamilyView {
 
     private static final int REQUEST_CHANGE_FAMILY = 1001;
 
@@ -58,6 +59,8 @@ public class FamilyTreeActivity extends BaseAppCompatActivity {
     private AlphaAnimation mOpenAlpha;
     private AlphaAnimation mCloseAlpha;
 
+    private FamilyPresenter mPresenter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,6 +75,7 @@ public class FamilyTreeActivity extends BaseAppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         mFamilyTree.destroyView();
+        mPresenter.detachView();
     }
 
     @Override
@@ -91,7 +95,7 @@ public class FamilyTreeActivity extends BaseAppCompatActivity {
                 item.setTitle(getString(R.string.text_do_not_show_spouse));
             }
             mFamilyTree.setShowBottomSpouse(!isShow);
-            mFamilyTree.drawFamilyTree(mSelectFamily);
+            showFamilyTree(mSelectFamily);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -102,15 +106,22 @@ public class FamilyTreeActivity extends BaseAppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CHANGE_FAMILY) {
             if (resultCode == RESULT_OK) {
-                final FamilyDBHelper dbHelper = new FamilyDBHelper(this);
-                mSelectFamily = dbHelper.findFamilyById(Config.MY_ID);
-                dbHelper.closeDB();
-                mFamilyTree.drawFamilyTree(mSelectFamily);
+                if (data != null) {
+                    final String id = data.getStringExtra(AddFamilyActivity.FAMILY_INFO);
+                    if (!TextUtils.isEmpty(id)) {
+                        mPresenter.getFamily(id);
+                        return;
+                    }
+                }
+                mPresenter.getFamily(Config.MY_ID);
             }
         }
     }
 
     private void initView() {
+        mPresenter = new FamilyPresenter();
+        mPresenter.attachView(this);
+
         mRootView = (CoordinatorLayout) findViewById(R.id.rootview);
         mFamilyTree = (FamilyTreeView) findViewById(R.id.ftv_tree);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -135,17 +146,10 @@ public class FamilyTreeActivity extends BaseAppCompatActivity {
         mAddChild.setOnClickListener(click);
         mAddBrothers.setOnClickListener(click);
 
-//        String json = AssetsUtil.getAssetsTxtByName(this, Config.FAMILY_LIST_DATA_FILE_NAME);
-//        List<FamilyBean> mList = JSONObject.parseArray(json, FamilyBean.class);
-//
-//        mFamilyTree.saveData(mList);
-        final FamilyDBHelper dbHelper = new FamilyDBHelper(this);
-        mSelectFamily = dbHelper.findFamilyById(Config.MY_ID);
-        dbHelper.closeDB();
-
         mFamilyTree.setShowBottomSpouse(false);
-        mFamilyTree.drawFamilyTree(mSelectFamily);
         mFamilyTree.setOnFamilyClickListener(familyClick);
+
+        mPresenter.getFamily(Config.MY_ID);
     }
 
     private void toAddFamily(String type) {
@@ -154,7 +158,9 @@ public class FamilyTreeActivity extends BaseAppCompatActivity {
         intent.putExtra(AddFamilyActivity.ADD_TYPE, type);
         intent.putExtra(AddFamilyActivity.FAMILY_INFO, mSelectFamily);
         startActivityForResult(intent, REQUEST_CHANGE_FAMILY);
-        closeFloatingMenu();
+        if (!TextUtils.isEmpty(type)) {
+            closeFloatingMenu();
+        }
     }
 
     private void initAnimation() {
@@ -230,13 +236,9 @@ public class FamilyTreeActivity extends BaseAppCompatActivity {
         @Override
         public void onFamilySelect(FamilyBean family) {
             if (family.isSelect()) {
-                Intent intent = new Intent();
-                intent.setClass(FamilyTreeActivity.this, FamilyInfoActivity.class);
-                intent.putExtra(FamilyInfoActivity.FAMILY_INFO, mSelectFamily);
-                startActivityForResult(intent, REQUEST_CHANGE_FAMILY);
+                toAddFamily("");
             } else {
-                mSelectFamily = family;
-                mFamilyTree.drawFamilyTree(mSelectFamily);
+                showFamilyTree(family);
             }
         }
     };
@@ -287,4 +289,20 @@ public class FamilyTreeActivity extends BaseAppCompatActivity {
             }
         }
     };
+
+    @Override
+    public void showProgress() {
+
+    }
+
+    @Override
+    public void hideProgress() {
+
+    }
+
+    @Override
+    public void showFamilyTree(FamilyBean family) {
+        mSelectFamily = family;
+        mFamilyTree.drawFamilyTree(mSelectFamily);
+    }
 }

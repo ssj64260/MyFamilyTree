@@ -1,4 +1,4 @@
-package com.cxb.myfamilytree.widget;
+package com.cxb.myfamilytree.widget.familytree;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -678,7 +678,9 @@ public class FamilyTreeView extends ViewGroup {
             mCurrentHeight = (mShowHeightPX - mItemHeightPX) / 2;
         }
 
-        scrollTo(mOnlyMyView.getLeft() - mCurrentWidth, mOnlyMyView.getTop() - mCurrentHeight);
+        if (mOnlyMyView != null) {
+            scrollTo(mOnlyMyView.getLeft() - mCurrentWidth, mOnlyMyView.getTop() - mCurrentHeight);
+        }
     }
 
     private void setChildViewFrame(View childView, int left, int top, int width, int height) {

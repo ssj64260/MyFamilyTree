@@ -25,9 +25,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.MainActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".ui.FamilyTreeActivity"
             android:screenOrientation="portrait" />
 
@@ -35,9 +32,6 @@
             android:name=".ui.AddFamilyActivity"
             android:screenOrientation="portrait" />
 
-        <activity
-            android:name=".ui.FamilyInfoActivity"
-            android:screenOrientation="portrait" />
     </application>
 
 </manifest>
