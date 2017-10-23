@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="FamilyTreeView">
+        <attr name="ftv_space_width" format="dimension" />
+        <attr name="ftv_item_width" format="dimension" />
+        <attr name="ftv_item_height" format="dimension" />
+        <attr name="ftv_name_textsize" format="dimension" />
+        <attr name="ftv_call_textsize" format="dimension" />
+        <attr name="ftv_line_width" format="dimension" />
+        <attr name="ftv_familyview_background" format="reference" />
+        <attr name="ftv_male_image_placeholder" format="reference" />
+        <attr name="ftv_female_image_placeholder" format="reference" />
+    </declare-styleable>
+
+</resources>
