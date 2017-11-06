@@ -81,7 +81,7 @@ public class FamilyDBHelper {
                 .where(sql, parentId, parentId, ignoreChildId, birthday));
     }
 
-    public long save(List<FamilyBean> families) {
+    public int save(List<FamilyBean> families) {
         return liteOrm.save(families);
     }
 
