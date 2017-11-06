@@ -21,6 +21,7 @@ import com.cxb.myfamilytree.model.FamilyBean;
 import com.cxb.myfamilytree.utils.DisplayUtil;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static com.cxb.myfamilytree.model.FamilyBean.SEX_FEMALE;
@@ -261,219 +262,185 @@ public class FamilyTreeView extends ViewGroup {
     }
 
     private void initView() {
-        initEachRightPart(5, mMyChildrenInfo, mMyChildrenView, mMyGrandChildrenView);
-        setRightByGeneration(4, mMyChildrenView);
-        setLeftByGeneration(4, mMyChildrenView);
+        initEachPart(5, true, mMyChildrenInfo, mMyChildrenView, mMyGrandChildrenView);
+        measureMaxCoordinate(4, true, mMyChildrenView);
+        measureMaxCoordinate(4, false, mMyChildrenView);
 
         initMyPart(3);
 
-        initEachRightPart(4, mMyLittleBrotherInfo, mMyLittleBrotherView, mMyLittleBroChildrenView);
-        setRightByGeneration(3, mMyLittleBrotherView);
-        initEachLeftPart(4, mMyBrotherInfo, mMyBrotherView, mMyBroChildrenView);
-        setLeftByGeneration(3, mMyBrotherView);
+        initEachPart(4, true, mMyLittleBrotherInfo, mMyLittleBrotherView, mMyLittleBroChildrenView);
+        measureMaxCoordinate(3, true, mMyLittleBrotherView);
+        initEachPart(4, false, mMyBrotherInfo, mMyBrotherView, mMyBroChildrenView);
+        measureMaxCoordinate(3, false, mMyBrotherView);
 
         initMyParentPart(2);
 
-        initEachRightPart(3, mMyMoUncleInfo, mMyMoUncleView, mMyMoUncleChildrenView);
-        setRightByGeneration(2, mMyMoUncleView);
-        initEachLeftPart(3, mMyFaUncleInfo, mMyFaUncleView, mMyFaUncleChildrenView);
-        setLeftByGeneration(2, mMyFaUncleView);
+        initEachPart(3, true, mMyMoUncleInfo, mMyMoUncleView, mMyMoUncleChildrenView);
+        measureMaxCoordinate(2, true, mMyMoUncleView);
+        initEachPart(3, false, mMyFaUncleInfo, mMyFaUncleView, mMyFaUncleChildrenView);
+        measureMaxCoordinate(2, false, mMyFaUncleView);
     }
 
-    private void initEachRightPart(int generation,
-                                   List<FamilyBean> parentinfoList,
-                                   List<Pair<View, View>> parentViewList,
-                                   List<Pair<View, View>> childrenViewList) {
-        final int position = generation - 1;
-        final int count = parentinfoList.size();
-        if (count > 0) {
-            for (int i = 0; i < count; i++) {
-                final FamilyBean parentInfo = parentinfoList.get(i);
-                setRightPart(parentInfo, position, parentViewList, childrenViewList);
-            }
-        } else {
-            mGenerationRight[position] += mItemWidthPX + mSpacePX;
-        }
-    }
-
-    private void setRightPart(FamilyBean familyInfo, int position,
+    private void initEachPart(int generation,
+                              boolean isRight,
+                              List<FamilyBean> parentinfoList,
                               List<Pair<View, View>> parentViewList,
                               List<Pair<View, View>> childrenViewList) {
-        final FamilyBean familySpouseInfo = familyInfo.getSpouse();
-        final String familySex = familyInfo.getSex();
-        final List<FamilyBean> childList = familyInfo.getChildren();
-        final int count = childList.size();
-        final int startLeft = mGenerationRight[position];
-
-        if (familySpouseInfo != null && count == 1) {
-            final FamilyBean childInfo = childList.get(0);
-            final String childSex = childInfo.getSex();
-            final FamilyBean childSpouseInfo = childInfo.getSpouse();
-            if (childSpouseInfo == null) {
-                final int maleLeft = mGenerationRight[position];
-                final int femaleLeft = maleLeft + mItemWidthPX + mSpacePX;
-                final View maleView;
-                final View femaleView;
-                if (SEX_MALE.equals(familySex)) {
-                    maleView = createFamilyView(familyInfo, maleLeft, mGenerationTop[position - 1]);
-                    femaleView = createFamilyView(familySpouseInfo, femaleLeft, mGenerationTop[position - 1]);
-                } else {
-                    maleView = createFamilyView(familySpouseInfo, maleLeft, mGenerationTop[position - 1]);
-                    femaleView = createFamilyView(familyInfo, femaleLeft, mGenerationTop[position - 1]);
-                }
-                parentViewList.add(Pair.create(maleView, femaleView));
-
-                final int childLeft = (maleLeft + femaleLeft) / 2;
-                final View childView = createFamilyView(childInfo, childLeft, mGenerationTop[position]);
-                final View childSpouseView = null;
-                if (SEX_MALE.equals(childSex)) {
-                    childrenViewList.add(Pair.create(childView, childSpouseView));
-                } else {
-                    childrenViewList.add(Pair.create(childSpouseView, childView));
-                }
-                mGenerationRight[position] = femaleLeft + mItemWidthPX + mSpacePX;
-                return;
-            }
-        }
-
-        if (count > 0) {
-            for (int i = 0; i < count; i++) {
-                final FamilyBean childInfo = childList.get(i);
-                final String childSex = childInfo.getSex();
-                final FamilyBean childSpouseInfo = childInfo.getSpouse();
-
-                final View maleView;
-                final View femaleView;
-                if (SEX_MALE.equals(childSex)) {
-                    maleView = createFamilyView(childInfo, mGenerationRight[position], mGenerationTop[position]);
-                    mGenerationRight[position] += mItemWidthPX + mSpacePX;
-                    if (childSpouseInfo != null) {
-                        femaleView = createFamilyView(childSpouseInfo, mGenerationRight[position], mGenerationTop[position]);
-                        mGenerationRight[position] += mItemWidthPX + mSpacePX;
-                    } else {
-                        femaleView = null;
-                    }
-                } else {
-                    if (childSpouseInfo != null) {
-                        maleView = createFamilyView(childSpouseInfo, mGenerationRight[position], mGenerationTop[position]);
-                        mGenerationRight[position] += mItemWidthPX + mSpacePX;
-                    } else {
-                        maleView = null;
-                    }
-                    femaleView = createFamilyView(childInfo, mGenerationRight[position], mGenerationTop[position]);
-                    mGenerationRight[position] += mItemWidthPX + mSpacePX;
-                }
-                childrenViewList.add(Pair.create(maleView, femaleView));
-            }
-        } else {
-            mGenerationRight[position] += mItemWidthPX + mSpacePX;
-            if (familySpouseInfo != null) {
-                mGenerationRight[position] += mItemWidthPX + mSpacePX;
-            }
-        }
-
-        final int centerLeft = (mGenerationRight[position] - mSpacePX - mItemWidthPX + startLeft) / 2;
-        final int maleLeft = centerLeft - (mItemWidthPX + mSpacePX) / 2;
-        final int femaleLeft = centerLeft + (mItemWidthPX + mSpacePX) / 2;
-        parentViewList.add(setParentLocate(position - 1, centerLeft, maleLeft, femaleLeft, familyInfo));
-    }
-
-    private void initEachLeftPart(int generation,
-                                  List<FamilyBean> parentinfoList,
-                                  List<Pair<View, View>> parentViewList,
-                                  List<Pair<View, View>> childrenViewList) {
         final int position = generation - 1;
         final int count = parentinfoList.size();
+        final List<FamilyBean> parentinfos = new ArrayList<>();
+        parentinfos.addAll(parentinfoList);
+        if (!isRight) {
+            Collections.reverse(parentinfoList);
+        }
         if (count > 0) {
-            for (int i = count - 1; i >= 0; i--) {
-                final FamilyBean parentInfo = parentinfoList.get(i);
-                setLeftPart(parentInfo, position, parentViewList, childrenViewList);
+            for (int i = 0; i < count; i++) {
+                final FamilyBean parentInfo = parentinfos.get(i);
+                setPart(position, isRight, parentInfo, parentViewList, childrenViewList);
             }
         } else {
-            mGenerationLeft[position] -= (mItemWidthPX + mSpacePX);
-        }
-    }
-
-    private void setLeftPart(FamilyBean familyInfo, int position,
-                             List<Pair<View, View>> parentViewList,
-                             List<Pair<View, View>> childrenViewList) {
-        final FamilyBean familySpouseInfo = familyInfo.getSpouse();
-        final String familySex = familyInfo.getSex();
-        final List<FamilyBean> childList = familyInfo.getChildren();
-        final int count = childList.size();
-        final int startLeft = mGenerationLeft[position];
-
-        if (familySpouseInfo != null && count == 1) {
-            final FamilyBean childInfo = childList.get(0);
-            final String childSex = childInfo.getSex();
-            final FamilyBean childSpouseInfo = childInfo.getSpouse();
-            if (childSpouseInfo == null) {
-                final int maleLeft = mGenerationLeft[position] - mSpacePX - mItemWidthPX;
-                final int femaleLeft = mGenerationLeft[position];
-                final View maleView;
-                final View femaleView;
-                if (SEX_MALE.equals(familySex)) {
-                    maleView = createFamilyView(familyInfo, maleLeft, mGenerationTop[position - 1]);
-                    femaleView = createFamilyView(familySpouseInfo, femaleLeft, mGenerationTop[position - 1]);
-                } else {
-                    maleView = createFamilyView(familySpouseInfo, maleLeft, mGenerationTop[position - 1]);
-                    femaleView = createFamilyView(familyInfo, femaleLeft, mGenerationTop[position - 1]);
-                }
-                parentViewList.add(0, Pair.create(maleView, femaleView));
-
-                final int childLeft = (maleLeft + femaleLeft) / 2;
-                final View childView = createFamilyView(childInfo, childLeft, mGenerationTop[position]);
-                final View childSpouseView = null;
-                if (SEX_MALE.equals(childSex)) {
-                    childrenViewList.add(0, Pair.create(childView, childSpouseView));
-                } else {
-                    childrenViewList.add(0, Pair.create(childSpouseView, childView));
-                }
-                mGenerationLeft[position] = maleLeft - mSpacePX - mItemWidthPX;
-                return;
-            }
-        }
-
-        if (count > 0) {
-            for (int i = count - 1; i >= 0; i--) {
-                final FamilyBean childInfo = childList.get(i);
-                final String childSex = childInfo.getSex();
-                final FamilyBean childSpouseInfo = childInfo.getSpouse();
-
-                final View maleView;
-                final View femaleView;
-                if (SEX_MALE.equals(childSex)) {
-                    if (childSpouseInfo != null) {
-                        femaleView = createFamilyView(childSpouseInfo, mGenerationLeft[position], mGenerationTop[position]);
-                        mGenerationLeft[position] -= (mItemWidthPX + mSpacePX);
-                    } else {
-                        femaleView = null;
-                    }
-                    maleView = createFamilyView(childInfo, mGenerationLeft[position], mGenerationTop[position]);
-                    mGenerationLeft[position] -= (mItemWidthPX + mSpacePX);
-                } else {
-                    femaleView = createFamilyView(childInfo, mGenerationLeft[position], mGenerationTop[position]);
-                    mGenerationLeft[position] -= (mItemWidthPX + mSpacePX);
-                    if (childSpouseInfo != null) {
-                        maleView = createFamilyView(childSpouseInfo, mGenerationLeft[position], mGenerationTop[position]);
-                        mGenerationLeft[position] -= (mItemWidthPX + mSpacePX);
-                    } else {
-                        maleView = null;
-                    }
-                }
-                childrenViewList.add(0, Pair.create(maleView, femaleView));
-            }
-        } else {
-            mGenerationLeft[position] -= (mItemWidthPX + mSpacePX);
-            if (familySpouseInfo != null) {
+            if (isRight) {
+                mGenerationRight[position] += (mItemWidthPX + mSpacePX);
+            } else {
                 mGenerationLeft[position] -= (mItemWidthPX + mSpacePX);
             }
         }
+    }
 
-        final int centerLeft = (startLeft + mGenerationLeft[position] + mItemWidthPX + mSpacePX) / 2;
+    private void setPart(int position,
+                         boolean isRight,
+                         FamilyBean familyInfo,
+                         List<Pair<View, View>> parentViewList,
+                         List<Pair<View, View>> childrenViewList) {
+        final FamilyBean familySpouseInfo = familyInfo.getSpouse();
+        final String familySex = familyInfo.getSex();
+        final List<FamilyBean> childList = new ArrayList<>();
+        childList.addAll(familyInfo.getChildren());
+        if (!isRight) {
+            Collections.reverse(childList);
+        }
+        final int count = childList.size();
+        final int startLeft = isRight ? mGenerationRight[position] : mGenerationLeft[position];
+
+        if (familySpouseInfo != null && count == 1) {
+            final FamilyBean childInfo = childList.get(0);
+            final String childSex = childInfo.getSex();
+            final FamilyBean childSpouseInfo = childInfo.getSpouse();
+            if (childSpouseInfo == null) {
+                final int maleLeft;
+                final int femaleLeft;
+                if (isRight) {
+                    maleLeft = mGenerationRight[position];
+                    femaleLeft = maleLeft + mItemWidthPX + mSpacePX;
+                } else {
+                    maleLeft = mGenerationLeft[position] - mSpacePX - mItemWidthPX;
+                    femaleLeft = mGenerationLeft[position];
+                }
+                final View maleView;
+                final View femaleView;
+                if (SEX_MALE.equals(familySex)) {
+                    maleView = createFamilyView(familyInfo, maleLeft, mGenerationTop[position - 1]);
+                    femaleView = createFamilyView(familySpouseInfo, femaleLeft, mGenerationTop[position - 1]);
+                } else {
+                    maleView = createFamilyView(familySpouseInfo, maleLeft, mGenerationTop[position - 1]);
+                    femaleView = createFamilyView(familyInfo, femaleLeft, mGenerationTop[position - 1]);
+                }
+
+                final int parentViewPosition = isRight ? parentViewList.size() : 0;
+                parentViewList.add(parentViewPosition, Pair.create(maleView, femaleView));
+
+                final int childLeft = (maleLeft + femaleLeft) / 2;
+                final View childView = createFamilyView(childInfo, childLeft, mGenerationTop[position]);
+                final View childSpouseView = null;
+                final int childViewPosition = isRight ? childrenViewList.size() : 0;
+                if (SEX_MALE.equals(childSex)) {
+                    childrenViewList.add(childViewPosition, Pair.create(childView, childSpouseView));
+                } else {
+                    childrenViewList.add(childViewPosition, Pair.create(childSpouseView, childView));
+                }
+
+                if (isRight) {
+                    mGenerationRight[position] = femaleLeft + (mItemWidthPX + mSpacePX);
+                } else {
+                    mGenerationLeft[position] = maleLeft - (mItemWidthPX + mSpacePX);
+                }
+                return;
+            }
+        }
+
+        if (count > 0) {
+            for (int i = 0; i < count; i++) {
+                final FamilyBean childInfo = childList.get(i);
+                final String childSex = childInfo.getSex();
+                final FamilyBean childSpouseInfo = childInfo.getSpouse();
+
+                final int maleLeft;
+                final int femaleLeft;
+                final int childPosition;
+                if (isRight) {
+                    maleLeft = mGenerationRight[position];
+                    mGenerationRight[position] += (mItemWidthPX + mSpacePX);
+                    femaleLeft = mGenerationRight[position];
+                    childPosition = childrenViewList.size();
+                } else {
+                    femaleLeft = mGenerationLeft[position];
+                    mGenerationLeft[position] -= (mItemWidthPX + mSpacePX);
+                    maleLeft = mGenerationLeft[position];
+                    childPosition = 0;
+                }
+
+                final View maleView;
+                final View femaleView;
+                if (childSpouseInfo != null) {
+                    if (SEX_MALE.equals(childSex)) {
+                        maleView = createFamilyView(childInfo, maleLeft, mGenerationTop[position]);
+                        femaleView = createFamilyView(childSpouseInfo, femaleLeft, mGenerationTop[position]);
+                    } else {
+                        maleView = createFamilyView(childSpouseInfo, maleLeft, mGenerationTop[position]);
+                        femaleView = createFamilyView(childInfo, femaleLeft, mGenerationTop[position]);
+                    }
+
+                    if (isRight) {
+                        mGenerationRight[position] += (mItemWidthPX + mSpacePX);
+                    } else {
+                        mGenerationLeft[position] -= (mItemWidthPX + mSpacePX);
+                    }
+                } else {
+                    final int childLeft = isRight ? maleLeft : femaleLeft;
+                    if (SEX_MALE.equals(childSex)) {
+                        maleView = createFamilyView(childInfo, childLeft, mGenerationTop[position]);
+                        femaleView = null;
+                    } else {
+                        maleView = null;
+                        femaleView = createFamilyView(childInfo, childLeft, mGenerationTop[position]);
+                    }
+                }
+                childrenViewList.add(childPosition, Pair.create(maleView, femaleView));
+            }
+        } else {
+            if (isRight) {
+                mGenerationRight[position] += (mItemWidthPX + mSpacePX);
+                if (familySpouseInfo != null) {
+                    mGenerationRight[position] += (mItemWidthPX + mSpacePX);
+                }
+            } else {
+                mGenerationLeft[position] -= (mItemWidthPX + mSpacePX);
+                if (familySpouseInfo != null) {
+                    mGenerationLeft[position] -= (mItemWidthPX + mSpacePX);
+                }
+            }
+        }
+
+        final int centerLeft;
+        final int parentViewPosition = isRight ? parentViewList.size() : 0;
+        if (isRight) {
+            centerLeft = (startLeft + mGenerationRight[position] - (mItemWidthPX + mSpacePX)) / 2;
+        } else {
+            centerLeft = (startLeft + mGenerationLeft[position] + (mItemWidthPX + mSpacePX)) / 2;
+        }
         final int maleLeft = centerLeft - (mItemWidthPX + mSpacePX) / 2;
         final int femaleLeft = centerLeft + (mItemWidthPX + mSpacePX) / 2;
-        parentViewList.add(0, setParentLocate(position - 1, centerLeft, maleLeft, femaleLeft, familyInfo));
+        parentViewList.add(parentViewPosition, setParentLocate(position - 1, centerLeft, maleLeft, femaleLeft, familyInfo));
     }
 
     private void initMyPart(int generation) {
@@ -490,8 +457,8 @@ public class FamilyTreeView extends ViewGroup {
 
         final List<Pair<View, View>> myPairList = new ArrayList<>(1);
         myPairList.add(mMyView);
-        setRightByGeneration(generation, myPairList);
-        setLeftByGeneration(generation, myPairList);
+        measureMaxCoordinate(generation, true, myPairList);
+        measureMaxCoordinate(generation, false, myPairList);
         if (mGenerationLeft[position + 1] > mGenerationLeft[position]) {
             mGenerationLeft[position + 1] = mGenerationLeft[position];
         }
@@ -516,8 +483,8 @@ public class FamilyTreeView extends ViewGroup {
 
             final List<Pair<View, View>> myParentPairList = new ArrayList<>(1);
             myParentPairList.add(mMyParentView);
-            setRightByGeneration(generation, myParentPairList);
-            setLeftByGeneration(generation, myParentPairList);
+            measureMaxCoordinate(generation, true, myParentPairList);
+            measureMaxCoordinate(generation, false, myParentPairList);
             if (mGenerationLeft[position + 1] > mGenerationLeft[position]) {
                 mGenerationLeft[position + 1] = mGenerationLeft[position];
             }
@@ -586,23 +553,21 @@ public class FamilyTreeView extends ViewGroup {
         }
     }
 
-    private void setRightByGeneration(int generation, List<Pair<View, View>> pairList) {
+    //计量该代最右或最左的坐标
+    private void measureMaxCoordinate(int generation, boolean isRight, List<Pair<View, View>> pairList) {
         final int position = generation - 1;
         if (pairList.size() > 0) {
-            final Pair<View, View> lastPair = pairList.get(pairList.size() - 1);
-            final View lastView = lastPair.second != null ? lastPair.second : lastPair.first;
-            mGenerationRight[position] = lastView.getLeft();
-            mGenerationRight[position] += mItemWidthPX + mSpacePX;
-        }
-    }
-
-    private void setLeftByGeneration(int generation, List<Pair<View, View>> pairList) {
-        final int position = generation - 1;
-        if (pairList.size() > 0) {
-            final Pair<View, View> firstPair = pairList.get(0);
-            final View firstView = firstPair.first != null ? firstPair.first : firstPair.second;
-            mGenerationLeft[position] = firstView.getLeft();
-            mGenerationLeft[position] -= (mSpacePX + mItemWidthPX);
+            if (isRight) {
+                final Pair<View, View> lastPair = pairList.get(pairList.size() - 1);
+                final View lastView = lastPair.second != null ? lastPair.second : lastPair.first;
+                mGenerationRight[position] = lastView.getLeft();
+                mGenerationRight[position] += mItemWidthPX + mSpacePX;
+            } else {
+                final Pair<View, View> firstPair = pairList.get(0);
+                final View firstView = firstPair.first != null ? firstPair.first : firstPair.second;
+                mGenerationLeft[position] = firstView.getLeft();
+                mGenerationLeft[position] -= (mSpacePX + mItemWidthPX);
+            }
         }
     }
 
