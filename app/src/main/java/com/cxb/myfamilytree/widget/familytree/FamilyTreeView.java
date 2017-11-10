@@ -291,7 +291,7 @@ public class FamilyTreeView extends ViewGroup {
         final List<FamilyBean> parentinfos = new ArrayList<>();
         parentinfos.addAll(parentinfoList);
         if (!isRight) {
-            Collections.reverse(parentinfoList);
+            Collections.reverse(parentinfos);
         }
         if (count > 0) {
             for (int i = 0; i < count; i++) {
