@@ -21,7 +21,7 @@ import android.widget.TextView;
 
 import com.cxb.myfamilytree.R;
 import com.cxb.myfamilytree.app.BaseAppCompatActivity;
-import com.cxb.myfamilytree.config.Config;
+import com.cxb.myfamilytree.config.Constants;
 import com.cxb.myfamilytree.model.FamilyBean;
 import com.cxb.myfamilytree.presenter.FamilyPresenter;
 import com.cxb.myfamilytree.utils.FastClick;
@@ -90,13 +90,15 @@ public class FamilyTreeActivity extends BaseAppCompatActivity implements IFamily
         if (id == R.id.action_show) {
             boolean isShow = mFamilyTree.isShowBottomSpouse();
             if (isShow) {
-                item.setTitle(getString(R.string.text_do_show_spouse));
+                item.setTitle(getString(R.string.show_bottom_spouse));
             } else {
-                item.setTitle(getString(R.string.text_do_not_show_spouse));
+                item.setTitle(getString(R.string.not_show_bottom_spouse));
             }
             mFamilyTree.setShowBottomSpouse(!isShow);
             showFamilyTree(mSelectFamily);
             return true;
+        } else if (id == R.id.action_settings) {
+
         }
         return super.onOptionsItemSelected(item);
     }
@@ -113,7 +115,7 @@ public class FamilyTreeActivity extends BaseAppCompatActivity implements IFamily
                         return;
                     }
                 }
-                mPresenter.getFamily(Config.MY_ID);
+                mPresenter.getFamily(Constants.MY_ID);
             }
         }
     }
@@ -149,7 +151,7 @@ public class FamilyTreeActivity extends BaseAppCompatActivity implements IFamily
         mFamilyTree.setShowBottomSpouse(false);
         mFamilyTree.setOnFamilyClickListener(familyClick);
 
-        mPresenter.getFamily(Config.MY_ID);
+        mPresenter.getFamily(Constants.MY_ID);
     }
 
     private void toAddFamily(String type) {
@@ -261,20 +263,20 @@ public class FamilyTreeActivity extends BaseAppCompatActivity implements IFamily
                     break;
                 case R.id.tv_spouse:
                     if (TextUtils.isEmpty(mSelectFamily.getSpouseId())) {
-                        toAddFamily(Config.TYPE_ADD_SPOUSE);
+                        toAddFamily(Constants.TYPE_ADD_SPOUSE);
                     } else {
                         Snackbar.make(mRootView, "已有配偶", Snackbar.LENGTH_LONG).show();
                     }
                     break;
                 case R.id.tv_parent:
                     if (TextUtils.isEmpty(mSelectFamily.getFatherId()) || TextUtils.isEmpty(mSelectFamily.getMotherId())) {
-                        toAddFamily(Config.TYPE_ADD_PARENT);
+                        toAddFamily(Constants.TYPE_ADD_PARENT);
                     } else {
                         Snackbar.make(mRootView, "已有父亲和母亲", Snackbar.LENGTH_LONG).show();
                     }
                     break;
                 case R.id.tv_child:
-                    toAddFamily(Config.TYPE_ADD_CHILD);
+                    toAddFamily(Constants.TYPE_ADD_CHILD);
                     break;
                 case R.id.tv_brothers:
                     final String fatherId = mSelectFamily.getFatherId();
@@ -283,7 +285,7 @@ public class FamilyTreeActivity extends BaseAppCompatActivity implements IFamily
                     if (TextUtils.isEmpty(fatherId) && TextUtils.isEmpty(motherId)) {
                         Snackbar.make(mRootView, "请先添加“" + name + "”的父母", Snackbar.LENGTH_LONG).show();
                     } else {
-                        toAddFamily(Config.TYPE_ADD_BROTHERS_AND_SISTERS);
+                        toAddFamily(Constants.TYPE_ADD_BROTHERS_AND_SISTERS);
                     }
                     break;
             }

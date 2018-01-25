@@ -1,6 +1,6 @@
 package com.cxb.myfamilytree.presenter;
 
-import com.cxb.myfamilytree.config.Config;
+import com.cxb.myfamilytree.config.Constants;
 import com.cxb.myfamilytree.model.FamilyBean;
 import com.cxb.myfamilytree.model.FamilyModel;
 import com.cxb.myfamilytree.model.IFamilyModel;
@@ -53,7 +53,7 @@ public class LaunchPresenter implements ILaunchPresenter {
 
     private void addFamily() {
         FamilyBean family = new FamilyBean();
-        family.setMemberId(Config.MY_ID);
+        family.setMemberId(Constants.MY_ID);
         family.setMemberName("我的姓名");
         family.setCall("我");
         family.setSex(SEX_MALE);

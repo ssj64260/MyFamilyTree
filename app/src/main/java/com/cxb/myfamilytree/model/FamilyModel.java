@@ -19,7 +19,7 @@ public class FamilyModel implements IFamilyModel {
                 .create(new ObservableOnSubscribe<FamilyBean>() {
                     @Override
                     public void subscribe(@NonNull ObservableEmitter<FamilyBean> e) throws Exception {
-                        final FamilyDBHelper dbHelper = new FamilyDBHelper(APP.getInstance());
+                        final FamilyDBHelper dbHelper = new FamilyDBHelper(APP.get());
                         FamilyBean family = dbHelper.findFamilyById(familyId);
                         dbHelper.closeDB();
 
@@ -39,7 +39,7 @@ public class FamilyModel implements IFamilyModel {
                 .create(new ObservableOnSubscribe() {
                     @Override
                     public void subscribe(@NonNull ObservableEmitter e) throws Exception {
-                        final FamilyDBHelper dbHelper = new FamilyDBHelper(APP.getInstance());
+                        final FamilyDBHelper dbHelper = new FamilyDBHelper(APP.get());
                         dbHelper.save(family);
                         dbHelper.closeDB();
 
@@ -53,7 +53,7 @@ public class FamilyModel implements IFamilyModel {
         return Observable.create(new ObservableOnSubscribe() {
             @Override
             public void subscribe(@NonNull ObservableEmitter e) throws Exception {
-                final FamilyDBHelper dbHelper = new FamilyDBHelper(APP.getInstance());
+                final FamilyDBHelper dbHelper = new FamilyDBHelper(APP.get());
                 dbHelper.updateSpouseId(currentId, spouseId);
                 dbHelper.updateSpouseId(spouseId, currentId);
                 dbHelper.closeDB();
@@ -68,7 +68,7 @@ public class FamilyModel implements IFamilyModel {
         return Observable.create(new ObservableOnSubscribe() {
             @Override
             public void subscribe(@NonNull ObservableEmitter e) throws Exception {
-                final FamilyDBHelper dbHelper = new FamilyDBHelper(APP.getInstance());
+                final FamilyDBHelper dbHelper = new FamilyDBHelper(APP.get());
                 dbHelper.updateParentId(fatherId, motherId);
                 dbHelper.closeDB();
 
@@ -82,7 +82,7 @@ public class FamilyModel implements IFamilyModel {
         return Observable.create(new ObservableOnSubscribe() {
             @Override
             public void subscribe(@NonNull ObservableEmitter e) throws Exception {
-                final FamilyDBHelper dbHelper = new FamilyDBHelper(APP.getInstance());
+                final FamilyDBHelper dbHelper = new FamilyDBHelper(APP.get());
                 dbHelper.exchangeParentId(afterChangeFatherId, afterChangeMotherId);
                 dbHelper.closeDB();
 
@@ -96,7 +96,7 @@ public class FamilyModel implements IFamilyModel {
         return Observable.create(new ObservableOnSubscribe() {
             @Override
             public void subscribe(@NonNull ObservableEmitter e) throws Exception {
-                final FamilyDBHelper dbHelper = new FamilyDBHelper(APP.getInstance());
+                final FamilyDBHelper dbHelper = new FamilyDBHelper(APP.get());
                 dbHelper.updateGender(familyId, gender);
                 dbHelper.closeDB();
 

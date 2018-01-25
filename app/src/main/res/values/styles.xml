@@ -1,15 +1,7 @@
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme.Base" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-    </style>
-
-    <style name="AppTheme" parent="AppTheme.Base">
-
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@color/transparent</item>
     </style>
 
     <!--快速启动页主题-->
@@ -19,11 +11,114 @@
         <item name="android:windowFullscreen">true</item>
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
-
+    <style name="ThemeLight" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="title_color">@color/material_white</item>
+        <item name="subtitle_color">@color/material_light_white</item>
+        <item name="icon_color">@color/material_light_black</item>
+        <item name="android:textColorPrimary">#212121</item>
+        <item name="android:textColorSecondary">#757575</item>
+        <item name="android:textColorTertiary">@color/material_grey_200</item>
+        <item name="android:windowBackground">@color/material_white</item>
+        <item name="appbar_theme">@style/AppbarThemeLight</item>
+        <item name="popup_theme">@style/PopupThemeLight</item>
+        <item name="preferenceTheme">@style/ThemePreference</item>
     </style>
 
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="ThemeGreen" parent="ThemeLight">
+        <item name="colorPrimary">@color/material_green_500</item>
+        <item name="colorPrimaryDark">@color/material_green_700</item>
+        <item name="colorAccent">@color/material_green_accent_700</item>
+    </style>
+
+    <style name="ThemeRed" parent="ThemeLight">
+        <item name="colorPrimary">@color/material_red_500</item>
+        <item name="colorPrimaryDark">@color/material_red_700</item>
+        <item name="colorAccent">@color/material_red_accent_700</item>
+    </style>
+
+    <style name="ThemePink" parent="ThemeLight">
+        <item name="colorPrimary">@color/bilibili_pink_500</item>
+        <item name="colorPrimaryDark">@color/bilibili_pink_700</item>
+        <item name="colorAccent">@color/bilibili_pink_accent_700</item>
+    </style>
+
+    <style name="ThemeIndigo" parent="ThemeLight">
+        <item name="colorPrimary">@color/material_indigo_500</item>
+        <item name="colorPrimaryDark">@color/material_indigo_700</item>
+        <item name="colorAccent">@color/material_indigo_accent_700</item>
+    </style>
+
+    <style name="ThemeTeal" parent="ThemeLight">
+        <item name="colorPrimary">@color/material_teal_500</item>
+        <item name="colorPrimaryDark">@color/material_teal_700</item>
+        <item name="colorAccent">@color/material_teal_accent_700</item>
+    </style>
+
+    <style name="ThemeOrange" parent="ThemeLight">
+        <item name="colorPrimary">@color/material_orange_500</item>
+        <item name="colorPrimaryDark">@color/material_orange_700</item>
+        <item name="colorAccent">@color/material_orange_accent_700</item>
+    </style>
+
+    <style name="ThemePurple" parent="ThemeLight">
+        <item name="colorPrimary">@color/material_deep_purple_500</item>
+        <item name="colorPrimaryDark">@color/material_deep_purple_700</item>
+        <item name="colorAccent">@color/material_deep_purple_accent_700</item>
+    </style>
+
+    <style name="ThemeBlue" parent="ThemeLight">
+        <item name="colorPrimary">@color/material_blue_500</item>
+        <item name="colorPrimaryDark">@color/material_blue_700</item>
+        <item name="colorAccent">@color/material_blue_accent_700</item>
+    </style>
+
+    <style name="ThemeBrown" parent="ThemeLight">
+        <item name="colorPrimary">@color/material_brown_500</item>
+        <item name="colorPrimaryDark">@color/material_brown_700</item>
+        <item name="colorAccent">@color/material_brown_700</item>
+    </style>
+
+    <style name="ThemeGrey" parent="ThemeLight">
+        <item name="colorPrimary">@color/material_blue_grey_500</item>
+        <item name="colorPrimaryDark">@color/material_blue_grey_700</item>
+        <item name="colorAccent">@color/material_blue_grey_700</item>
+    </style>
+
+    <style name="ThemeWhite" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/material_white</item>
+        <item name="colorPrimaryDark">@color/material_light_white</item>
+        <item name="colorAccent">@color/material_black_700</item>
+        <item name="title_color">@color/material_black_700</item>
+        <item name="subtitle_color">@color/material_black_500</item>
+        <item name="icon_color">@color/material_light_black</item>
+        <item name="android:textColorPrimary">#212121</item>
+        <item name="android:textColorSecondary">#757575</item>
+        <item name="android:textColorTertiary">@color/material_grey_200</item>
+        <item name="android:windowBackground">@color/material_white</item>
+        <item name="preferenceTheme">@style/ThemePreference</item>
+    </style>
+
+    <style name="ThemeDark" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">#2D3035</item>
+        <item name="colorPrimaryDark">#26282C</item>
+        <item name="colorAccent">@color/material_light_white</item>
+        <item name="title_color">@color/material_white</item>
+        <item name="subtitle_color">@color/material_light_white</item>
+        <item name="icon_color">@color/material_light_white</item>
+        <item name="android:textColorPrimary">@color/material_light_white</item>
+        <item name="android:textColorSecondary">@color/material_grey_500</item>
+        <item name="android:textColorTertiary">@color/material_grey_200</item>
+        <item name="android:windowBackground">@color/material_black_900</item>
+        <item name="appbar_theme">@style/AppbarThemeLight</item>
+        <item name="popup_theme">@style/PopupThemeLight</item>
+        <item name="preferenceTheme">@style/ThemePreference</item>
+    </style>
+
+    <style name="ThemePreference" parent="PreferenceThemeOverlay.v14.Material" />
+
+    <style name="AppbarThemeLight" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="PopupThemeLight" parent="ThemeOverlay.AppCompat.Light" />
 
 
 </resources>

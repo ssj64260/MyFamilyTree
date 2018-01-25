@@ -12,31 +12,19 @@ import com.tencent.bugly.crashreport.CrashReport;
 
 public class APP extends Application {
 
-    private static APP INStANCE;
-
-    public APP() {
-        INStANCE = this;
-    }
-
-    public static APP getInstance() {
-        if (INStANCE == null) {
-            synchronized (APP.class) {
-                if (INStANCE == null) {
-                    INStANCE = new APP();
-                }
-            }
-        }
-        return INStANCE;
-    }
+    private static APP mApp;
 
     @Override
     public void onCreate() {
         super.onCreate();
+        mApp = this;
 
-//        LeakCanary.install(getInstance());//内存泄漏监听
-
-        CrashReport.initCrashReport(getApplicationContext(), "e581318ce4", false);//Bugly
-
+        CrashReport.initCrashReport(getApplicationContext(), "e581318ce4", false);
         Logger.init(getString(R.string.app_name));
     }
+
+    public static APP get(){
+        return mApp;
+    }
+
 }

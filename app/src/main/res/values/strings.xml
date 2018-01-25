@@ -9,9 +9,25 @@
     <string name="permission_dialog_btn_cancel">取消</string>
 
     <!--menu-->
-    <string name="text_do_not_show_spouse">不显示底层配偶</string>
-    <string name="text_do_show_spouse">显示底层配偶</string>
+    <string name="not_show_bottom_spouse">不显示底层配偶</string>
+    <string name="show_bottom_spouse">显示底层配偶</string>
+    <string name="settings">设置</string>
 
     <!--behavior-->
     <string name="floatingbutton_up_behavior" translatable="false">com.cxb.myfamilytree.utils.FloatingButtonUpBehavior</string>
+
+    <string name="family_information">亲人信息</string>
+    <string name="add_spouse">添加配偶</string>
+    <string name="add_parent">添加父母</string>
+    <string name="add_child">添加子女</string>
+    <string name="add_brother_and_sister">添加兄弟姐妹</string>
+    <string name="add_who_s_spouse">添加%s配偶</string>
+    <string name="add_who_s_parent">添加%s父母</string>
+    <string name="add_who_s_child">添加%s子女</string>
+    <string name="add_who_s_brother_and_sister">添加%s兄弟姐妹</string>
+    <string name="name_can_not_null">真实姓名不能为空</string>
+    <string name="call_can_not_null">称呼不能为空</string>
+    <string name="cancel">取消</string>
+    <string name="edit">修改</string>
+
 </resources>

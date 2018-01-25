@@ -8,10 +8,10 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 
 import com.cxb.myfamilytree.R;
-import com.cxb.myfamilytree.app.BaseAppCompatActivity;
-import com.cxb.myfamilytree.config.Config;
+import com.cxb.myfamilytree.config.Constants;
 import com.cxb.myfamilytree.presenter.ILaunchPresenter;
 import com.cxb.myfamilytree.presenter.LaunchPresenter;
 import com.cxb.myfamilytree.utils.AppManager;
@@ -20,14 +20,14 @@ import com.cxb.myfamilytree.view.ILaunchView;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.cxb.myfamilytree.config.Config.REQUEST_TO_SETTING;
+import static com.cxb.myfamilytree.config.Constants.REQUEST_TO_SETTING;
 
 
 /**
  * 启动页面
  */
 
-public class LaunchActivity extends BaseAppCompatActivity implements ILaunchView {
+public class LaunchActivity extends AppCompatActivity implements ILaunchView {
 
     private int permissionPosition = 0;//当前请求权限位置
     private String[] permissions;
@@ -55,13 +55,13 @@ public class LaunchActivity extends BaseAppCompatActivity implements ILaunchView
     }
 
     private void initData() {
-        mPresenter.getFamily(Config.MY_ID);
+        mPresenter.getFamily(Constants.MY_ID);
     }
 
     private void checkPermission() {
         final String appName = getString(R.string.app_name);
         permissions = new String[]{
-                Config.PERMISSION_STORAGE
+                Constants.PERMISSION_STORAGE
         };
         errorTips = new String[]{
                 String.format(getString(R.string.text_storage_permission_message), appName)

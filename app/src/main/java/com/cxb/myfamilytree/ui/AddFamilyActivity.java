@@ -3,11 +3,7 @@ package com.cxb.myfamilytree.ui;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,8 +13,8 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.cxb.myfamilytree.R;
-import com.cxb.myfamilytree.app.BaseAppCompatActivity;
-import com.cxb.myfamilytree.config.Config;
+import com.cxb.myfamilytree.app.BaseActivity;
+import com.cxb.myfamilytree.config.Constants;
 import com.cxb.myfamilytree.model.FamilyBean;
 import com.cxb.myfamilytree.presenter.AddFamilyPresenter;
 import com.cxb.myfamilytree.presenter.IAddFamilyPresenter;
@@ -37,13 +33,11 @@ import static com.cxb.myfamilytree.model.FamilyBean.SEX_MALE;
  * 添加家庭成员
  */
 
-public class AddFamilyActivity extends BaseAppCompatActivity implements IAddFamilyView {
+public class AddFamilyActivity extends BaseActivity implements IAddFamilyView {
 
     public static final String ADD_TYPE = "add_type";//添加类型
     public static final String FAMILY_INFO = "family_info";//家人信息
 
-    private CoordinatorLayout mRootView;
-    private Toolbar mToolBar;
     private EditText mEditName;
     private EditText mEditCall;
     private EditText mEditBirthday;
@@ -58,55 +52,46 @@ public class AddFamilyActivity extends BaseAppCompatActivity implements IAddFami
     private IAddFamilyPresenter mPresenter;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_family);
-
-        initView();
-        setData();
-
+    protected int getContentView() {
+        return R.layout.activity_add_family;
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mPresenter.detachView();
-        if (mDatePicker != null) {
-            mDatePicker.dismiss();
-        }
+    protected void initData() {
+        super.initData();
+        final Intent intent = getIntent();
+        mAddType = intent.getStringExtra(ADD_TYPE);
+        mSelectFamily = intent.getParcelableExtra(FAMILY_INFO);
     }
 
-    private void initView() {
+    @Override
+    protected void initView(Bundle savedInstanceState) {
+        super.initView(savedInstanceState);
+        setToolbarBackEnable();
+
         mPresenter = new AddFamilyPresenter();
         mPresenter.attachView(this);
 
-        mRootView = (CoordinatorLayout) findViewById(R.id.rootview);
-        mToolBar = (Toolbar) findViewById(R.id.toolbar);
         mEditName = (EditText) findViewById(R.id.et_name);
         mEditCall = (EditText) findViewById(R.id.et_call);
         mEditBirthday = (EditText) findViewById(R.id.et_birthday);
         mGenderGroup = (RadioGroup) findViewById(R.id.rg_gender);
-    }
 
-    private void setData() {
-        final Intent intent = getIntent();
-        mAddType = intent.getStringExtra(ADD_TYPE);
-        mSelectFamily = intent.getParcelableExtra(FAMILY_INFO);
         final String familyName = mSelectFamily.getMemberName();
-        if (Config.TYPE_ADD_SPOUSE.equals(mAddType)) {
-            mToolBar.setTitle("添加配偶");
-            mToolBar.setSubtitle("添加" + familyName + "的配偶");
-        } else if (Config.TYPE_ADD_PARENT.equals(mAddType)) {
-            mToolBar.setTitle("添加父母");
-            mToolBar.setSubtitle("添加" + familyName + "的父母");
-        } else if (Config.TYPE_ADD_CHILD.equals(mAddType)) {
-            mToolBar.setTitle("添加子女");
-            mToolBar.setSubtitle("添加" + familyName + "的子女");
-        } else if (Config.TYPE_ADD_BROTHERS_AND_SISTERS.equals(mAddType)) {
-            mToolBar.setTitle("添加兄弟姐妹");
-            mToolBar.setSubtitle("添加" + familyName + "的兄弟姐妹");
+        if (Constants.TYPE_ADD_SPOUSE.equals(mAddType)) {
+            setToolbarTitle(R.string.add_spouse);
+            setToolbarSubTitle(String.format(getString(R.string.add_who_s_spouse), familyName));
+        } else if (Constants.TYPE_ADD_PARENT.equals(mAddType)) {
+            setToolbarTitle(R.string.add_parent);
+            setToolbarSubTitle(String.format(getString(R.string.add_who_s_parent), familyName));
+        } else if (Constants.TYPE_ADD_CHILD.equals(mAddType)) {
+            setToolbarTitle(R.string.add_child);
+            setToolbarSubTitle(String.format(getString(R.string.add_who_s_child), familyName));
+        } else if (Constants.TYPE_ADD_BROTHERS_AND_SISTERS.equals(mAddType)) {
+            setToolbarTitle(R.string.add_brother_and_sister);
+            setToolbarSubTitle(String.format(getString(R.string.add_who_s_brother_and_sister), familyName));
         } else {
-            mToolBar.setTitle("亲人信息");
+            setToolbarTitle(R.string.family_information);
             mEditName.setText(mSelectFamily.getMemberName());
             mEditCall.setText(mSelectFamily.getCall());
             mEditBirthday.setText(mSelectFamily.getBirthday());
@@ -125,13 +110,7 @@ public class AddFamilyActivity extends BaseAppCompatActivity implements IAddFami
             }
         }
 
-        setSupportActionBar(mToolBar);
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
-
-        mEditBirthday.setOnClickListener(click);
+        mEditBirthday.setOnClickListener(mClick);
         mEditBirthday.setLongClickable(false);
     }
 
@@ -165,16 +144,16 @@ public class AddFamilyActivity extends BaseAppCompatActivity implements IAddFami
         final String birthday = mEditBirthday.getText().toString();
         final String gender = mGenderGroup.getCheckedRadioButtonId() == R.id.rb_female ? SEX_FEMALE : SEX_MALE;
         if (TextUtils.isEmpty(name)) {
-            showToast("真实姓名不能为空");
+            showToast(getString(R.string.name_can_not_null));
         } else if (TextUtils.isEmpty(call)) {
-            showToast("称呼不能为空");
+            showToast(getString(R.string.call_can_not_null));
         } else {
             if (TextUtils.isEmpty(mAddType)) {
                 if (mAlertDialog == null) {
                     mAlertDialog = new AlertDialog.Builder(this).create();
                     mAlertDialog.setCanceledOnTouchOutside(false);
                     mAlertDialog.setCancelable(true);
-                    mAlertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "修改", new DialogInterface.OnClickListener() {
+                    mAlertDialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.edit), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             final boolean isChangeGender = !gender.equals(mSelectFamily.getSex());
@@ -185,7 +164,7 @@ public class AddFamilyActivity extends BaseAppCompatActivity implements IAddFami
                             mPresenter.updateFamilyInfo(mSelectFamily, isChangeGender);
                         }
                     });
-                    mAlertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "取消", new DialogInterface.OnClickListener() {
+                    mAlertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.cancel), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
@@ -206,30 +185,27 @@ public class AddFamilyActivity extends BaseAppCompatActivity implements IAddFami
                 family.setCall(call);
                 family.setBirthday(birthday);
                 family.setSex(gender);
-                if (Config.TYPE_ADD_SPOUSE.equals(mAddType)) {
+                if (Constants.TYPE_ADD_SPOUSE.equals(mAddType)) {
                     mPresenter.addSpouse(mSelectFamily, family);
-                } else if (Config.TYPE_ADD_PARENT.equals(mAddType)) {
+                } else if (Constants.TYPE_ADD_PARENT.equals(mAddType)) {
                     mPresenter.addParent(mSelectFamily, family);
-                } else if (Config.TYPE_ADD_CHILD.equals(mAddType)) {
+                } else if (Constants.TYPE_ADD_CHILD.equals(mAddType)) {
                     mPresenter.addChild(mSelectFamily, family);
-                } else if (Config.TYPE_ADD_BROTHERS_AND_SISTERS.equals(mAddType)) {
+                } else if (Constants.TYPE_ADD_BROTHERS_AND_SISTERS.equals(mAddType)) {
                     mPresenter.addBrothersAndSisters(mSelectFamily, family);
                 }
             }
         }
     }
 
-    private final View.OnClickListener click = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            switch (v.getId()) {
-                case R.id.et_birthday:
-                    final String dateText = mEditBirthday.getText().toString();
-                    showDateDialog(R.id.et_birthday, dateText);
-                    break;
-            }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mPresenter.detachView();
+        if (mDatePicker != null) {
+            mDatePicker.dismiss();
         }
-    };
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -271,6 +247,19 @@ public class AddFamilyActivity extends BaseAppCompatActivity implements IAddFami
 
     @Override
     public void showToast(String toast) {
-        Snackbar.make(mRootView, toast, Snackbar.LENGTH_LONG).show();
+        showSnackbar(toast);
     }
+
+    private final View.OnClickListener mClick = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.et_birthday:
+                    final String dateText = mEditBirthday.getText().toString();
+                    showDateDialog(R.id.et_birthday, dateText);
+                    break;
+            }
+        }
+    };
+
 }
