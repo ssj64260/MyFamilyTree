@@ -4,29 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rootview"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
+    android:layout_height="match_parent">
 
-    <android.support.design.widget.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="?attr/appbar_theme">
-
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="?attr/popup_theme"
-            app:titleTextColor="@android:color/white" />
-
-    </android.support.design.widget.AppBarLayout>
+    <include layout="@layout/layout_appbar" />
 
     <com.cxb.myfamilytree.widget.familytree.FamilyTreeView
         android:id="@+id/ftv_tree"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#F1F1F1"
+        app:ftv_line_color="?attr/colorPrimary"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <View
@@ -45,6 +32,7 @@
         android:gravity="center"
         android:orientation="vertical"
         android:visibility="invisible"
+        app:layout_behavior="@string/floatingbutton_up_behavior"
         tools:visibility="visible">
 
         <TextView
@@ -52,10 +40,10 @@
             android:layout_width="56dp"
             android:layout_height="40dp"
             android:layout_marginTop="16dp"
-            android:background="@color/colorPrimary"
+            android:background="?attr/colorPrimary"
             android:gravity="center"
             android:text="兄弟姐妹"
-            android:textColor="@color/colorIconsText"
+            android:textColor="?attr/title_color"
             android:textSize="14sp" />
 
         <TextView
@@ -63,10 +51,10 @@
             android:layout_width="56dp"
             android:layout_height="40dp"
             android:layout_marginTop="16dp"
-            android:background="@color/colorPrimary"
+            android:background="?attr/colorPrimary"
             android:gravity="center"
             android:text="子女"
-            android:textColor="@color/colorIconsText"
+            android:textColor="?attr/title_color"
             android:textSize="14sp" />
 
         <TextView
@@ -74,10 +62,10 @@
             android:layout_width="56dp"
             android:layout_height="40dp"
             android:layout_marginTop="16dp"
-            android:background="@color/colorPrimary"
+            android:background="?attr/colorPrimary"
             android:gravity="center"
             android:text="父母"
-            android:textColor="@color/colorIconsText"
+            android:textColor="?attr/title_color"
             android:textSize="14sp" />
 
         <TextView
@@ -85,23 +73,24 @@
             android:layout_width="56dp"
             android:layout_height="40dp"
             android:layout_margin="16dp"
-            android:background="@color/colorPrimary"
+            android:background="?attr/colorPrimary"
             android:gravity="center"
             android:text="配偶"
-            android:textColor="@color/colorIconsText"
+            android:textColor="?attr/title_color"
             android:textSize="14sp" />
 
     </LinearLayout>
 
-    <ImageButton
-        android:id="@+id/ib_add"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/btn_add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_marginBottom="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
-        android:background="@drawable/shape_bg_floating_button"
-        android:src="@drawable/ic_action_add" />
+        android:src="@drawable/ic_add"
+        app:backgroundTint="?attr/colorPrimary"
+        app:fabSize="normal" />
 
 </android.support.design.widget.CoordinatorLayout>

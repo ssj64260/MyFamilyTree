@@ -45,6 +45,11 @@ public class PrefUtils {
         getDefaultSp().edit().remove(key).apply();
     }
 
+    public static boolean isDarkTheme(){
+        final String themeName = getDefaultSp().getString(Constants.THEME, Constants.TEAL);
+        return Constants.DARK.equals(themeName);
+    }
+
     public static String getTheme(){
         return getDefaultSp().getString(Constants.THEME, Constants.TEAL);
     }

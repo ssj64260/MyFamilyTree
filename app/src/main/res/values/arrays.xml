@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <array name="theme_list">
+        <item>@string/green</item>
+        <item>@string/red</item>
+        <item>@string/pink</item>
+        <item>@string/indigo</item>
+        <item>@string/teal</item>
+        <item>@string/orange</item>
+        <item>@string/purple</item>
+        <item>@string/blue</item>
+        <item>@string/brown</item>
+        <item>@string/grey</item>
+        <item>@string/white</item>
+        <item>@string/black</item>
+        <item>@string/dark</item>
+    </array>
+
+    <array name="language_array">
+        <item >English</item>
+        <item >简体中文</item>
+    </array>
+
+    <array name="language_id_array">
+        <item >en</item>
+        <item >zh-rCN</item>
+    </array>
+
+</resources>

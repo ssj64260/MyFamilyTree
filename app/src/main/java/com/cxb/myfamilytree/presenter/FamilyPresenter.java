@@ -13,7 +13,7 @@ import io.reactivex.schedulers.Schedulers;
  * 家谱树界面presenter实现
  */
 
-public class FamilyPresenter implements IFamilyPresenter {
+public class FamilyPresenter implements IBasePresenter<IFamilyView> {
 
     private FamilyModel mModel;
     private IFamilyView mView;
@@ -22,7 +22,6 @@ public class FamilyPresenter implements IFamilyPresenter {
         mModel = new FamilyModel();
     }
 
-    @Override
     public void getFamily(String familyId) {
         mModel.findFamilyById(familyId)
                 .subscribeOn(Schedulers.io())

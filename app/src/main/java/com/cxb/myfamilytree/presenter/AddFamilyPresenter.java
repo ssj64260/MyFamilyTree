@@ -23,7 +23,7 @@ import static com.cxb.myfamilytree.model.FamilyBean.SEX_MALE;
  * 添加亲人Presenter实现
  */
 
-public class AddFamilyPresenter implements IAddFamilyPresenter {
+public class AddFamilyPresenter implements IBasePresenter<IAddFamilyView> {
 
     private IFamilyModel mModel;
     private IAddFamilyView mView;
@@ -32,7 +32,6 @@ public class AddFamilyPresenter implements IAddFamilyPresenter {
         mModel = new FamilyModel();
     }
 
-    @Override
     public void addSpouse(FamilyBean selectFamily, FamilyBean addFamily) {
         final String selectFamilySex = selectFamily.getSex();
         final String familySex = addFamily.getSex();
@@ -71,7 +70,6 @@ public class AddFamilyPresenter implements IAddFamilyPresenter {
         }
     }
 
-    @Override
     public void addParent(FamilyBean selectFamily, FamilyBean addFamily) {
         final String familySex = addFamily.getSex();
         final String fatherId = selectFamily.getFatherId();
@@ -118,7 +116,6 @@ public class AddFamilyPresenter implements IAddFamilyPresenter {
         }
     }
 
-    @Override
     public void addChild(FamilyBean selectFamily, FamilyBean addFamily) {
         final String selectFamilySex = selectFamily.getSex();
         if (SEX_MALE.equals(selectFamilySex)) {
@@ -142,7 +139,6 @@ public class AddFamilyPresenter implements IAddFamilyPresenter {
                 .subscribe();
     }
 
-    @Override
     public void addBrothersAndSisters(FamilyBean selectFamily, FamilyBean addFamily) {
         addFamily.setFatherId(selectFamily.getFatherId());
         addFamily.setMotherId(selectFamily.getMotherId());
@@ -160,7 +156,6 @@ public class AddFamilyPresenter implements IAddFamilyPresenter {
                 .subscribe();
     }
 
-    @Override
     public void updateFamilyInfo(FamilyBean family, boolean isChangeGender) {
         final List<ObservableSource> observables = new ArrayList<>();
         observables.add(mModel.saveFamily(family));

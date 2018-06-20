@@ -6,7 +6,7 @@ import com.cxb.myfamilytree.model.FamilyBean;
  * 家谱树界面View
  */
 
-public interface IFamilyView extends IBaseView {
+public interface IFamilyView {
 
     void showFamilyTree(FamilyBean family);
 

@@ -18,7 +18,7 @@ import static com.cxb.myfamilytree.model.FamilyBean.SEX_MALE;
  * 启动页Presenter实现
  */
 
-public class LaunchPresenter implements ILaunchPresenter {
+public class LaunchPresenter implements IBasePresenter<ILaunchView> {
 
     private ILaunchView mView;
     private IFamilyModel mModel;
@@ -27,7 +27,6 @@ public class LaunchPresenter implements ILaunchPresenter {
         mModel = new FamilyModel();
     }
 
-    @Override
     public void getFamily(String familyId) {
         mModel.findFamilyById(familyId)
                 .subscribeOn(Schedulers.io())

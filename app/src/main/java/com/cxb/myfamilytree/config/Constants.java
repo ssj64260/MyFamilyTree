@@ -23,7 +23,7 @@ public class Constants {
     public final static String RED = "姨妈红";
     public final static String PINK = "哔哩粉";
     public final static String INDIGO = "颐堤蓝";
-    public final static String TEAL = "水鸭绿";
+    public final static String TEAL = "水鸭青";
     public final static String ORANGE = "伊藤橙";
     public final static String PURPLE = "基佬紫";
     public final static String BLUE = "知乎蓝";

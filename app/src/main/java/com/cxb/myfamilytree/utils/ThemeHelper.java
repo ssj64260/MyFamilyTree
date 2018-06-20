@@ -1,12 +1,10 @@
-
-
 package com.cxb.myfamilytree.utils;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.StyleRes;
 
 import com.cxb.myfamilytree.R;
 import com.cxb.myfamilytree.app.BaseActivity;
-import com.cxb.myfamilytree.a_test.MVPBaseActivity;
 import com.cxb.myfamilytree.config.Constants;
 
 /**
@@ -17,12 +15,7 @@ import com.cxb.myfamilytree.config.Constants;
 
 public class ThemeHelper {
 
-    public static void apply(MVPBaseActivity activity) {
-        String theme = PrefUtils.getTheme();
-        activity.setTheme(getTheme(theme));
-    }
-
-    public static void apply(BaseActivity activity) {
+    public static void apply(@NonNull BaseActivity activity) {
         String theme = PrefUtils.getTheme();
         activity.setTheme(getTheme(theme));
     }
@@ -53,10 +46,10 @@ public class ThemeHelper {
             case Constants.WHITE:
                 return R.style.ThemeWhite;
             case Constants.BLACK:
-                return R.style.ThemeTeal;
+                return R.style.ThemeBlack;
             case Constants.DARK:
                 return R.style.ThemeDark;
         }
-        return R.style.ThemeTeal;
+        return R.style.ThemeDark;
     }
 }

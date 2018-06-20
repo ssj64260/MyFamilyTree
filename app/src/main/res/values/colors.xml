@@ -4,8 +4,7 @@
     <color name="colorPrimaryDark">#00796B</color>
     <color name="colorAccent">#009688</color>
     <color name="colorPrimaryLight">#B2DFDB</color>
-    <color name="colorPrimaryText">#212121</color>
-    <color name="colorSecondaryText">#757575</color>
+
     <color name="colorDivider">#BDBDBD</color>
     <color name="colorIconsText">#FFFFFF</color>
 
@@ -18,7 +17,6 @@
     <color name="female_avatar_color">#E39B99</color>
     <color name="female_avatar_bg_color">#FAEDED</color>
     <color name="female_text_bg_color">#FFCCBC</color>
-
 
     <!--100%    FF-->
     <!--95% 	F2-->
@@ -42,13 +40,18 @@
     <!--5%  	0D-->
     <!--0%  	00-->
 
+    <color name="dark_line">#333333</color>
+
+    <color name="colorPrimaryText">#212121</color>
+    <color name="colorSecondaryText">#757575</color>
+
     <color name="bilibili_pink_500">#FB7299</color>
     <color name="bilibili_pink_700">#EC407A</color>
     <color name="bilibili_pink_accent_700">#FF4081</color>
+    <color name="dark_500">#2D3035</color>
+    <color name="dark_700">#26282C</color>
 
     <color name="transparent">#00FFFFFF</color>
-    <color name="white">#FFFFFF</color>
-    <color name="black_light">#212121</color>
 
     <color name="material_light_white">#EEEEEE</color>
     <color name="material_white">#FFFFFF</color>

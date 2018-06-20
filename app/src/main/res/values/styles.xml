@@ -15,8 +15,8 @@
         <item name="title_color">@color/material_white</item>
         <item name="subtitle_color">@color/material_light_white</item>
         <item name="icon_color">@color/material_light_black</item>
-        <item name="android:textColorPrimary">#212121</item>
-        <item name="android:textColorSecondary">#757575</item>
+        <item name="android:textColorPrimary">@color/colorPrimaryText</item>
+        <item name="android:textColorSecondary">@color/colorSecondaryText</item>
         <item name="android:textColorTertiary">@color/material_grey_200</item>
         <item name="android:windowBackground">@color/material_white</item>
         <item name="appbar_theme">@style/AppbarThemeLight</item>
@@ -91,16 +91,31 @@
         <item name="title_color">@color/material_black_700</item>
         <item name="subtitle_color">@color/material_black_500</item>
         <item name="icon_color">@color/material_light_black</item>
-        <item name="android:textColorPrimary">#212121</item>
-        <item name="android:textColorSecondary">#757575</item>
+        <item name="android:textColorPrimary">@color/colorPrimaryText</item>
+        <item name="android:textColorSecondary">@color/colorSecondaryText</item>
+        <item name="android:textColorTertiary">@color/material_grey_200</item>
+        <item name="android:windowBackground">@color/material_white</item>
+        <item name="preferenceTheme">@style/ThemePreference</item>
+    </style>
+
+    <!--TODO 高端黑颜色调配-->
+    <style name="ThemeBlack" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/material_white</item>
+        <item name="colorPrimaryDark">@color/material_light_white</item>
+        <item name="colorAccent">@color/material_black_700</item>
+        <item name="title_color">@color/material_black_700</item>
+        <item name="subtitle_color">@color/material_black_500</item>
+        <item name="icon_color">@color/material_light_black</item>
+        <item name="android:textColorPrimary">@color/colorPrimaryText</item>
+        <item name="android:textColorSecondary">@color/colorSecondaryText</item>
         <item name="android:textColorTertiary">@color/material_grey_200</item>
         <item name="android:windowBackground">@color/material_white</item>
         <item name="preferenceTheme">@style/ThemePreference</item>
     </style>
 
     <style name="ThemeDark" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimary">#2D3035</item>
-        <item name="colorPrimaryDark">#26282C</item>
+        <item name="colorPrimary">@color/dark_500</item>
+        <item name="colorPrimaryDark">@color/dark_700</item>
         <item name="colorAccent">@color/material_light_white</item>
         <item name="title_color">@color/material_white</item>
         <item name="subtitle_color">@color/material_light_white</item>

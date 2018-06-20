@@ -22,7 +22,7 @@
         android:id="@+id/btn_confirm"
         android:layout_width="match_parent"
         android:layout_height="45dp"
-        android:background="@color/colorPrimary"
+        android:background="?attr/colorPrimary"
         android:text="确定"
         android:textColor="@color/colorIconsText"
         android:textSize="14sp" />

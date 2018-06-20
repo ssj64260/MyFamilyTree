@@ -3,62 +3,82 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/rootview"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
+    android:layout_height="match_parent">
 
     <include layout="@layout/layout_appbar" />
 
-    <android.support.v7.widget.LinearLayoutCompat
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:paddingEnd="16dp"
-        android:paddingStart="16dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <android.support.v7.widget.AppCompatEditText
-            android:id="@+id/et_name"
+        <android.support.v7.widget.LinearLayoutCompat
             android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:hint="真实姓名"
-            android:maxLength="6"
-            android:maxLines="1" />
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingEnd="16dp"
+            android:paddingStart="16dp">
 
-        <android.support.v7.widget.AppCompatEditText
-            android:id="@+id/et_call"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:hint="称呼"
-            android:maxLength="6"
-            android:maxLines="1" />
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/iv_avatar"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:src="@drawable/ic_person_add"
+                android:layout_marginTop="16dp" />
 
-        <android.support.v7.widget.AppCompatEditText
-            android:id="@+id/et_birthday"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:focusable="false"
-            android:hint="出生日期" />
+            <android.support.v7.widget.AppCompatEditText
+                android:id="@+id/et_name"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:hint="真实姓名"
+                android:maxLength="6"
+                android:maxLines="1"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textColorHint="?android:attr/textColorSecondary" />
 
-        <RadioGroup
-            android:id="@+id/rg_gender"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:orientation="horizontal">
+            <android.support.v7.widget.AppCompatEditText
+                android:id="@+id/et_call"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:hint="称呼"
+                android:maxLength="6"
+                android:maxLines="1"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textColorHint="?android:attr/textColorSecondary" />
 
-            <android.support.v7.widget.AppCompatRadioButton
-                android:id="@+id/rb_male"
-                android:layout_width="80dp"
-                android:layout_height="match_parent"
-                android:checked="true"
-                android:text="男" />
+            <android.support.v7.widget.AppCompatEditText
+                android:id="@+id/et_birthday"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:focusable="false"
+                android:hint="出生日期"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textColorHint="?android:attr/textColorSecondary" />
 
-            <android.support.v7.widget.AppCompatRadioButton
-                android:id="@+id/rb_female"
-                android:layout_width="80dp"
-                android:layout_height="match_parent"
-                android:text="女" />
-        </RadioGroup>
+            <RadioGroup
+                android:id="@+id/rg_gender"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:orientation="horizontal">
 
-    </android.support.v7.widget.LinearLayoutCompat>
+                <android.support.v7.widget.AppCompatRadioButton
+                    android:id="@+id/rb_male"
+                    android:layout_width="80dp"
+                    android:layout_height="match_parent"
+                    android:checked="true"
+                    android:text="男"
+                    android:textColor="?android:attr/textColorPrimary" />
+
+                <android.support.v7.widget.AppCompatRadioButton
+                    android:id="@+id/rb_female"
+                    android:layout_width="80dp"
+                    android:layout_height="match_parent"
+                    android:text="女"
+                    android:textColor="?android:attr/textColorPrimary" />
+            </RadioGroup>
+
+        </android.support.v7.widget.LinearLayoutCompat>
+
+    </android.support.v4.widget.NestedScrollView>
 
 </android.support.design.widget.CoordinatorLayout>

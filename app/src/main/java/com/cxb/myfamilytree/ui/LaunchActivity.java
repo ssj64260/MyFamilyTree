@@ -12,7 +12,6 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.cxb.myfamilytree.R;
 import com.cxb.myfamilytree.config.Constants;
-import com.cxb.myfamilytree.presenter.ILaunchPresenter;
 import com.cxb.myfamilytree.presenter.LaunchPresenter;
 import com.cxb.myfamilytree.utils.AppManager;
 import com.cxb.myfamilytree.view.ILaunchView;
@@ -35,7 +34,7 @@ public class LaunchActivity extends AppCompatActivity implements ILaunchView {
 
     private AlertDialog mAlertDialog;
 
-    private ILaunchPresenter mPresenter;
+    private LaunchPresenter mPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -150,7 +149,7 @@ public class LaunchActivity extends AppCompatActivity implements ILaunchView {
 
     @Override
     public void startMainActivity() {
-        startActivity(new Intent(LaunchActivity.this, FamilyTreeActivity.class));
+        FamilyTreeActivity.show(LaunchActivity.this);
         finish();
     }
 }

@@ -11,6 +11,7 @@
     <!--menu-->
     <string name="not_show_bottom_spouse">不显示底层配偶</string>
     <string name="show_bottom_spouse">显示底层配偶</string>
+    <string name="choose_theme">选择主题</string>
     <string name="settings">设置</string>
 
     <!--behavior-->
@@ -29,5 +30,19 @@
     <string name="call_can_not_null">称呼不能为空</string>
     <string name="cancel">取消</string>
     <string name="edit">修改</string>
+
+    <string name="green">原谅绿</string>
+    <string name="red">姨妈红</string>
+    <string name="pink">哔哩粉</string>
+    <string name="indigo">颐堤蓝</string>
+    <string name="teal">水鸭青</string>
+    <string name="orange">伊藤橙</string>
+    <string name="purple">基佬紫</string>
+    <string name="blue">知乎蓝</string>
+    <string name="brown">古铜棕</string>
+    <string name="grey">低调灰</string>
+    <string name="white">今夜白</string>
+    <string name="black">高端黑</string>
+    <string name="dark">夜间模式</string>
 
 </resources>

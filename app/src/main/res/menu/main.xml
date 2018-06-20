@@ -7,8 +7,8 @@
         android:title="@string/show_bottom_spouse"
         app:showAsAction="never" />
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/action_choose_theme"
         android:orderInCategory="100"
-        android:title="@string/settings"
+        android:title="@string/choose_theme"
         app:showAsAction="never" />
 </menu>

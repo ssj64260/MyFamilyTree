@@ -31,7 +31,9 @@
         <activity
             android:name=".ui.AddFamilyActivity"
             android:screenOrientation="portrait" />
-
+        <activity
+            android:name=".ui.ThemeListActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

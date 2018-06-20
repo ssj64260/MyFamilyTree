@@ -1,6 +1,7 @@
 package com.cxb.myfamilytree.widget.familytree;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
@@ -119,6 +120,10 @@ public class FamilyTreeView extends ViewGroup {
     public FamilyTreeView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
+        TypedArray typedArray = context.obtainStyledAttributes(attrs,R.styleable.FamilyTreeView);
+        final int textColor = typedArray.getColor(R.styleable.FamilyTreeView_ftv_line_color,0xFFBBBBBB)   ;
+        typedArray.recycle();
+
         mScrollWidth = DisplayUtil.dip2px(SCROLL_WIDTH);
         mSpacePX = DisplayUtil.dip2px(SPACE_WIDTH_DP);
         mLineWidthPX = DisplayUtil.dip2px(LINE_WIDTH_DP);
@@ -138,7 +143,7 @@ public class FamilyTreeView extends ViewGroup {
 
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mPaint.reset();
-        mPaint.setColor(0xFFBBBBBB);
+        mPaint.setColor(textColor);
         mPaint.setStrokeWidth(mLineWidthPX);
         mPaint.setStyle(Paint.Style.STROKE);
 

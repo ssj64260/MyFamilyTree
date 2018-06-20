@@ -1,10 +1,10 @@
 package com.cxb.myfamilytree.ui;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,12 +15,11 @@ import android.view.animation.AnticipateOvershootInterpolator;
 import android.view.animation.OvershootInterpolator;
 import android.view.animation.RotateAnimation;
 import android.view.animation.ScaleAnimation;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cxb.myfamilytree.R;
-import com.cxb.myfamilytree.app.BaseAppCompatActivity;
+import com.cxb.myfamilytree.app.BaseActivity;
 import com.cxb.myfamilytree.config.Constants;
 import com.cxb.myfamilytree.model.FamilyBean;
 import com.cxb.myfamilytree.presenter.FamilyPresenter;
@@ -33,17 +32,16 @@ import com.cxb.myfamilytree.widget.familytree.OnFamilyClickListener;
  * 仿亲友+
  */
 
-public class FamilyTreeActivity extends BaseAppCompatActivity implements IFamilyView {
+public class FamilyTreeActivity extends BaseActivity implements IFamilyView {
 
     private static final int REQUEST_CHANGE_FAMILY = 1001;
+    private static final int REQUEST_CODE_THEME = 1002;
 
-    private CoordinatorLayout mRootView;
     private FamilyTreeView mFamilyTree;
-    private Toolbar mToolbar;
 
     private View mBackground;
     private LinearLayout mButtons;
-    private ImageButton mFloatingButton;
+    private FloatingActionButton btnAdd;
     private TextView mAddSpouse;
     private TextView mAddParent;
     private TextView mAddChild;
@@ -61,14 +59,52 @@ public class FamilyTreeActivity extends BaseAppCompatActivity implements IFamily
 
     private FamilyPresenter mPresenter;
 
+    public static void show(Activity activity) {
+        Intent intent = new Intent();
+        intent.setClass(activity, FamilyTreeActivity.class);
+        activity.startActivity(intent);
+    }
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_family_tree);
+    protected int getContentView() {
+        return R.layout.activity_family_tree;
+    }
 
-        initView();
-        setData();
+    @Override
+    protected void initData() {
+        super.initData();
+        initAnimation();
+        mPresenter = new FamilyPresenter();
+    }
 
+    @Override
+    protected void initView(Bundle savedInstanceState) {
+        super.initView(savedInstanceState);
+
+        mPresenter.attachView(this);
+
+        setToolbarTitle(R.string.app_name);
+
+        mFamilyTree = (FamilyTreeView) findViewById(R.id.ftv_tree);
+        mBackground = findViewById(R.id.view_background);
+        mButtons = (LinearLayout) findViewById(R.id.ll_buttons);
+        btnAdd = (FloatingActionButton) findViewById(R.id.btn_add);
+        mAddSpouse = (TextView) findViewById(R.id.tv_spouse);
+        mAddParent = (TextView) findViewById(R.id.tv_parent);
+        mAddChild = (TextView) findViewById(R.id.tv_child);
+        mAddBrothers = (TextView) findViewById(R.id.tv_brothers);
+
+        mBackground.setOnClickListener(click);
+        btnAdd.setOnClickListener(click);
+        mAddSpouse.setOnClickListener(click);
+        mAddParent.setOnClickListener(click);
+        mAddChild.setOnClickListener(click);
+        mAddBrothers.setOnClickListener(click);
+
+        mFamilyTree.setShowBottomSpouse(false);
+        mFamilyTree.setOnFamilyClickListener(familyClick);
+
+        mPresenter.getFamily(Constants.MY_ID);
     }
 
     @Override
@@ -97,8 +133,9 @@ public class FamilyTreeActivity extends BaseAppCompatActivity implements IFamily
             mFamilyTree.setShowBottomSpouse(!isShow);
             showFamilyTree(mSelectFamily);
             return true;
-        } else if (id == R.id.action_settings) {
-
+        } else if (id == R.id.action_choose_theme) {
+            ThemeListActivity.show(this, REQUEST_CODE_THEME);
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -117,49 +154,16 @@ public class FamilyTreeActivity extends BaseAppCompatActivity implements IFamily
                 }
                 mPresenter.getFamily(Constants.MY_ID);
             }
+        } else if (requestCode == REQUEST_CODE_THEME) {
+            if (resultCode == RESULT_OK) {
+                recreate();
+            }
         }
     }
 
-    private void initView() {
-        mPresenter = new FamilyPresenter();
-        mPresenter.attachView(this);
-
-        mRootView = (CoordinatorLayout) findViewById(R.id.rootview);
-        mFamilyTree = (FamilyTreeView) findViewById(R.id.ftv_tree);
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        mBackground = findViewById(R.id.view_background);
-        mButtons = (LinearLayout) findViewById(R.id.ll_buttons);
-        mFloatingButton = (ImageButton) findViewById(R.id.ib_add);
-        mAddSpouse = (TextView) findViewById(R.id.tv_spouse);
-        mAddParent = (TextView) findViewById(R.id.tv_parent);
-        mAddChild = (TextView) findViewById(R.id.tv_child);
-        mAddBrothers = (TextView) findViewById(R.id.tv_brothers);
-    }
-
-    private void setData() {
-        mToolbar.setTitle(getString(R.string.app_name));
-        setSupportActionBar(mToolbar);
-
-        initAnimation();
-        mBackground.setOnClickListener(click);
-        mFloatingButton.setOnClickListener(click);
-        mAddSpouse.setOnClickListener(click);
-        mAddParent.setOnClickListener(click);
-        mAddChild.setOnClickListener(click);
-        mAddBrothers.setOnClickListener(click);
-
-        mFamilyTree.setShowBottomSpouse(false);
-        mFamilyTree.setOnFamilyClickListener(familyClick);
-
-        mPresenter.getFamily(Constants.MY_ID);
-    }
-
     private void toAddFamily(String type) {
-        Intent intent = new Intent();
-        intent.setClass(this, AddFamilyActivity.class);
-        intent.putExtra(AddFamilyActivity.ADD_TYPE, type);
-        intent.putExtra(AddFamilyActivity.FAMILY_INFO, mSelectFamily);
-        startActivityForResult(intent, REQUEST_CHANGE_FAMILY);
+        AddFamilyActivity.show(this, REQUEST_CODE_THEME, mSelectFamily, type);
+
         if (!TextUtils.isEmpty(type)) {
             closeFloatingMenu();
         }
@@ -204,7 +208,7 @@ public class FamilyTreeActivity extends BaseAppCompatActivity implements IFamily
         mBackground.setVisibility(View.VISIBLE);
         mButtons.setVisibility(View.VISIBLE);
 
-        mFloatingButton.startAnimation(mOpenRotation);
+        btnAdd.startAnimation(mOpenRotation);
         mBackground.startAnimation(mOpenAlpha);
         mButtons.startAnimation(mOpenAlpha);
         mAddSpouse.startAnimation(mOpenScale);
@@ -222,7 +226,7 @@ public class FamilyTreeActivity extends BaseAppCompatActivity implements IFamily
         mOpenAlpha.cancel();
         mCloseAlpha.cancel();
 
-        mFloatingButton.startAnimation(mCloseRotation);
+        btnAdd.startAnimation(mCloseRotation);
         mAddSpouse.startAnimation(mCloseScale);
         mAddParent.startAnimation(mCloseScale);
         mAddChild.startAnimation(mCloseScale);
@@ -254,7 +258,7 @@ public class FamilyTreeActivity extends BaseAppCompatActivity implements IFamily
                         closeFloatingMenu();
                     }
                     break;
-                case R.id.ib_add:
+                case R.id.btn_add:
                     if (mMenuIsOpen) {
                         closeFloatingMenu();
                     } else {
@@ -291,16 +295,6 @@ public class FamilyTreeActivity extends BaseAppCompatActivity implements IFamily
             }
         }
     };
-
-    @Override
-    public void showProgress() {
-
-    }
-
-    @Override
-    public void hideProgress() {
-
-    }
 
     @Override
     public void showFamilyTree(FamilyBean family) {
