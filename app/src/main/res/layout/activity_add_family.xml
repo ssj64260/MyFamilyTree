@@ -23,7 +23,7 @@
                 android:id="@+id/iv_avatar"
                 android:layout_width="120dp"
                 android:layout_height="120dp"
-                android:src="@drawable/ic_person_add"
+                android:src="@drawable/ic_add_a_photo"
                 android:layout_marginTop="16dp" />
 
             <android.support.v7.widget.AppCompatEditText

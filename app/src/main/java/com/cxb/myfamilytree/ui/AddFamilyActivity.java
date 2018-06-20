@@ -126,8 +126,8 @@ public class AddFamilyActivity extends BaseActivity implements IAddFamilyView {
                 final File file = new File(mAvatarPath);
                 Glide.with(this)
                         .load(file)
-                        .placeholder(R.drawable.ic_person_add)
-                        .error(R.drawable.ic_person_add)
+                        .placeholder(R.drawable.ic_add_a_photo)
+                        .error(R.drawable.ic_add_a_photo)
                         .centerCrop()
                         .dontAnimate()
                         .into(ivAvatar);
@@ -295,8 +295,8 @@ public class AddFamilyActivity extends BaseActivity implements IAddFamilyView {
 
                     Glide.with(this)
                             .load(mCutePhotoFile)
-                            .placeholder(R.drawable.ic_person_add)
-                            .error(R.drawable.ic_person_add)
+                            .placeholder(R.drawable.ic_add_a_photo)
+                            .error(R.drawable.ic_add_a_photo)
                             .centerCrop()
                             .dontAnimate()
                             .into(ivAvatar);
