@@ -1,5 +1,6 @@
 package com.cxb.myfamilytree.ui;
 
+import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -60,9 +61,11 @@ public class LaunchActivity extends AppCompatActivity implements ILaunchView {
     private void checkPermission() {
         final String appName = getString(R.string.app_name);
         permissions = new String[]{
-                Constants.PERMISSION_STORAGE
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
         };
         errorTips = new String[]{
+                String.format(getString(R.string.text_storage_permission_message), appName),
                 String.format(getString(R.string.text_storage_permission_message), appName)
         };
 
