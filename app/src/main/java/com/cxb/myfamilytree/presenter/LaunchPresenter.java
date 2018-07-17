@@ -8,6 +8,7 @@ import com.cxb.myfamilytree.view.ILaunchView;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
@@ -23,31 +24,35 @@ public class LaunchPresenter implements IBasePresenter<ILaunchView> {
     private ILaunchView mView;
     private IFamilyModel mModel;
 
+    private CompositeDisposable mDisposable;
+
     public LaunchPresenter() {
+        mDisposable = new CompositeDisposable();
         mModel = new FamilyModel();
     }
 
     public void getFamily(String familyId) {
-        mModel.findFamilyById(familyId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        new Consumer<FamilyBean>() {
-                            @Override
-                            public void accept(@NonNull FamilyBean family) throws Exception {
-                                if (isActive()) {
-                                    mView.startMainActivity();
-                                }
-                            }
-                        },
-                        new Consumer<Throwable>() {
-                            @Override
-                            public void accept(@NonNull Throwable throwable) throws Exception {
-                                if (isActive()) {
-                                    addFamily();
-                                }
-                            }
-                        });
+        mDisposable.add(
+                mModel.findFamilyById(familyId)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(
+                                new Consumer<FamilyBean>() {
+                                    @Override
+                                    public void accept(@NonNull FamilyBean family) throws Exception {
+                                        if (isActive()) {
+                                            mView.startMainActivity();
+                                        }
+                                    }
+                                },
+                                new Consumer<Throwable>() {
+                                    @Override
+                                    public void accept(@NonNull Throwable throwable) throws Exception {
+                                        if (isActive()) {
+                                            addFamily();
+                                        }
+                                    }
+                                }));
     }
 
     private void addFamily() {
@@ -58,18 +63,19 @@ public class LaunchPresenter implements IBasePresenter<ILaunchView> {
         family.setSex(SEX_MALE);
         family.setBirthday("");
 
-        mModel.saveFamily(family)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnComplete(new Action() {
-                    @Override
-                    public void run() throws Exception {
-                        if (isActive()) {
-                            mView.startMainActivity();
-                        }
-                    }
-                })
-                .subscribe();
+        mDisposable.add(
+                mModel.saveFamily(family)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .doOnComplete(new Action() {
+                            @Override
+                            public void run() throws Exception {
+                                if (isActive()) {
+                                    mView.startMainActivity();
+                                }
+                            }
+                        })
+                        .subscribe());
     }
 
     private boolean isActive() {
@@ -83,6 +89,9 @@ public class LaunchPresenter implements IBasePresenter<ILaunchView> {
 
     @Override
     public void detachView() {
+        if (mDisposable != null && !mDisposable.isDisposed()) {
+            mDisposable.dispose();
+        }
         mView = null;
     }
 }

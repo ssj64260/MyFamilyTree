@@ -2,9 +2,9 @@ package com.cxb.myfamilytree.utils;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.StyleRes;
+import android.support.v7.app.AppCompatActivity;
 
 import com.cxb.myfamilytree.R;
-import com.cxb.myfamilytree.app.BaseActivity;
 import com.cxb.myfamilytree.config.Constants;
 
 /**
@@ -15,13 +15,13 @@ import com.cxb.myfamilytree.config.Constants;
 
 public class ThemeHelper {
 
-    public static void apply(@NonNull BaseActivity activity) {
+    public static void apply(@NonNull AppCompatActivity activity) {
         String theme = PrefUtils.getTheme();
         activity.setTheme(getTheme(theme));
     }
 
     @StyleRes
-    public static int getTheme(String theme) {
+    private static int getTheme(String theme) {
         switch (theme) {
             case Constants.GREEN:
                 return R.style.ThemeGreen;

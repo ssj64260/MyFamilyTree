@@ -13,6 +13,7 @@ import java.util.List;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Action;
 import io.reactivex.schedulers.Schedulers;
 
@@ -28,7 +29,10 @@ public class AddFamilyPresenter implements IBasePresenter<IAddFamilyView> {
     private IFamilyModel mModel;
     private IAddFamilyView mView;
 
+    private CompositeDisposable mDisposable;
+
     public AddFamilyPresenter() {
+        mDisposable = new CompositeDisposable();
         mModel = new FamilyModel();
     }
 
@@ -50,23 +54,24 @@ public class AddFamilyPresenter implements IBasePresenter<IAddFamilyView> {
                 femaleId = addFamily.getMemberId();
             }
 
-            Observable
-                    .merge(
-                            mModel.saveFamily(addFamily),
-                            mModel.updateSpouseIdEach(maleId, femaleId),
-                            mModel.updateParentId(maleId, femaleId)
-                    )
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .doOnComplete(new Action() {
-                        @Override
-                        public void run() throws Exception {
-                            if (isActive()) {
-                                mView.setResultAndFinish();
-                            }
-                        }
-                    })
-                    .subscribe();
+            mDisposable.add(
+                    Observable
+                            .merge(
+                                    mModel.saveFamily(addFamily),
+                                    mModel.updateSpouseIdEach(maleId, femaleId),
+                                    mModel.updateParentId(maleId, femaleId)
+                            )
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .doOnComplete(new Action() {
+                                @Override
+                                public void run() {
+                                    if (isActive()) {
+                                        mView.setResultAndFinish();
+                                    }
+                                }
+                            })
+                            .subscribe());
         }
     }
 
@@ -95,24 +100,26 @@ public class AddFamilyPresenter implements IBasePresenter<IAddFamilyView> {
             }
             selectFamily.setFatherId(maleId);
             selectFamily.setMotherId(femaleId);
-            Observable
-                    .merge(
-                            mModel.saveFamily(addFamily),
-                            mModel.saveFamily(selectFamily),
-                            mModel.updateSpouseIdEach(maleId, femaleId),
-                            mModel.updateParentId(maleId, femaleId)
-                    )
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .doOnComplete(new Action() {
-                        @Override
-                        public void run() throws Exception {
-                            if (isActive()) {
-                                mView.setResultAndFinish();
-                            }
-                        }
-                    })
-                    .subscribe();
+
+            mDisposable.add(
+                    Observable
+                            .merge(
+                                    mModel.saveFamily(addFamily),
+                                    mModel.saveFamily(selectFamily),
+                                    mModel.updateSpouseIdEach(maleId, femaleId),
+                                    mModel.updateParentId(maleId, femaleId)
+                            )
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .doOnComplete(new Action() {
+                                @Override
+                                public void run() {
+                                    if (isActive()) {
+                                        mView.setResultAndFinish();
+                                    }
+                                }
+                            })
+                            .subscribe());
         }
     }
 
@@ -125,35 +132,38 @@ public class AddFamilyPresenter implements IBasePresenter<IAddFamilyView> {
             addFamily.setFatherId(selectFamily.getSpouseId());
             addFamily.setMotherId(selectFamily.getMemberId());
         }
-        mModel.saveFamily(addFamily)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnComplete(new Action() {
-                    @Override
-                    public void run() throws Exception {
-                        if (isActive()) {
-                            mView.setResultAndFinish();
-                        }
-                    }
-                })
-                .subscribe();
+        mDisposable.add(
+                mModel.saveFamily(addFamily)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .doOnComplete(new Action() {
+                            @Override
+                            public void run() {
+                                if (isActive()) {
+                                    mView.setResultAndFinish();
+                                }
+                            }
+                        })
+                        .subscribe());
     }
 
     public void addBrothersAndSisters(FamilyBean selectFamily, FamilyBean addFamily) {
         addFamily.setFatherId(selectFamily.getFatherId());
         addFamily.setMotherId(selectFamily.getMotherId());
-        mModel.saveFamily(addFamily)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnComplete(new Action() {
-                    @Override
-                    public void run() throws Exception {
-                        if (isActive()) {
-                            mView.setResultAndFinish();
-                        }
-                    }
-                })
-                .subscribe();
+
+        mDisposable.add(
+                mModel.saveFamily(addFamily)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .doOnComplete(new Action() {
+                            @Override
+                            public void run() {
+                                if (isActive()) {
+                                    mView.setResultAndFinish();
+                                }
+                            }
+                        })
+                        .subscribe());
     }
 
     public void updateFamilyInfo(FamilyBean family, boolean isChangeGender) {
@@ -181,19 +191,20 @@ public class AddFamilyPresenter implements IBasePresenter<IAddFamilyView> {
             observables.add(mModel.exchangeParentId(maleId, femaleId));
         }
 
-        Observable
-                .mergeArray(observables.toArray(new ObservableSource[observables.size()]))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnComplete(new Action() {
-                    @Override
-                    public void run() throws Exception {
-                        if (isActive()) {
-                            mView.setResultAndFinish();
-                        }
-                    }
-                })
-                .subscribe();
+        mDisposable.add(
+                Observable
+                        .mergeArray(observables.toArray(new ObservableSource[observables.size()]))
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .doOnComplete(new Action() {
+                            @Override
+                            public void run() {
+                                if (isActive()) {
+                                    mView.setResultAndFinish();
+                                }
+                            }
+                        })
+                        .subscribe());
     }
 
     private boolean isActive() {
@@ -207,6 +218,9 @@ public class AddFamilyPresenter implements IBasePresenter<IAddFamilyView> {
 
     @Override
     public void detachView() {
+        if (mDisposable != null && !mDisposable.isDisposed()) {
+            mDisposable.dispose();
+        }
         mView = null;
     }
 }

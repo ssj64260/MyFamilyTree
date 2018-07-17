@@ -11,6 +11,7 @@ import com.cxb.myfamilytree.view.IThemeListView;
 import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
@@ -24,7 +25,10 @@ public class ThemeListPresenter implements IBasePresenter<IThemeListView> {
     private IThemeModel mModel;
     private IThemeListView mView;
 
+    private CompositeDisposable mDisposable;
+
     public ThemeListPresenter() {
+        mDisposable = new CompositeDisposable();
         mModel = new ThemeModel();
     }
 
@@ -35,36 +39,41 @@ public class ThemeListPresenter implements IBasePresenter<IThemeListView> {
 
     @Override
     public void detachView() {
+        if (mDisposable != null && !mDisposable.isDisposed()) {
+            mDisposable.dispose();
+        }
         mView = null;
     }
 
     public void getThemeList(@NonNull Resources resources) {
-        mModel.getThemeList(resources)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<List<ThemeBean>>() {
-                    @Override
-                    public void accept(List<ThemeBean> themeList) throws Exception {
-                        if (mView != null) mView.showThemeList(themeList);
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
+        mDisposable.add(
+                mModel.getThemeList(resources)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Consumer<List<ThemeBean>>() {
+                            @Override
+                            public void accept(List<ThemeBean> themeList) throws Exception {
+                                if (mView != null) mView.showThemeList(themeList);
+                            }
+                        }, new Consumer<Throwable>() {
+                            @Override
+                            public void accept(Throwable throwable) throws Exception {
 
-                    }
-                });
+                            }
+                        }));
     }
 
     public void saveTheme(@NonNull String theme) {
-        mModel.saveTheme(theme)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnComplete(new Action() {
-                    @Override
-                    public void run() throws Exception {
-                        if (mView != null) mView.recreateActivity();
-                    }
-                })
-                .subscribe();
+        mDisposable.add(
+                mModel.saveTheme(theme)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .doOnComplete(new Action() {
+                            @Override
+                            public void run() throws Exception {
+                                if (mView != null) mView.recreateActivity();
+                            }
+                        })
+                        .subscribe());
     }
 }
