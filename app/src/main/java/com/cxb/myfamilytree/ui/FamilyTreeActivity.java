@@ -15,8 +15,8 @@ import android.view.animation.AnticipateOvershootInterpolator;
 import android.view.animation.OvershootInterpolator;
 import android.view.animation.RotateAnimation;
 import android.view.animation.ScaleAnimation;
+import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.cxb.myfamilytree.R;
 import com.cxb.myfamilytree.app.BaseActivity;
@@ -42,10 +42,10 @@ public class FamilyTreeActivity extends BaseActivity implements IFamilyView {
     private View mBackground;
     private LinearLayout mButtons;
     private FloatingActionButton btnAdd;
-    private TextView mAddSpouse;
-    private TextView mAddParent;
-    private TextView mAddChild;
-    private TextView mAddBrothers;
+    private Button mAddSpouse;
+    private Button mAddParent;
+    private Button mAddChild;
+    private Button mAddBrothers;
 
     private FamilyBean mSelectFamily;
     private boolean mMenuIsOpen = false;
@@ -85,14 +85,14 @@ public class FamilyTreeActivity extends BaseActivity implements IFamilyView {
 
         setToolbarTitle(R.string.app_name);
 
-        mFamilyTree = (FamilyTreeView) findViewById(R.id.ftv_tree);
+        mFamilyTree = findViewById(R.id.ftv_tree);
         mBackground = findViewById(R.id.view_background);
-        mButtons = (LinearLayout) findViewById(R.id.ll_buttons);
-        btnAdd = (FloatingActionButton) findViewById(R.id.btn_add);
-        mAddSpouse = (TextView) findViewById(R.id.tv_spouse);
-        mAddParent = (TextView) findViewById(R.id.tv_parent);
-        mAddChild = (TextView) findViewById(R.id.tv_child);
-        mAddBrothers = (TextView) findViewById(R.id.tv_brothers);
+        mButtons = findViewById(R.id.ll_buttons);
+        btnAdd = findViewById(R.id.btn_add);
+        mAddSpouse = findViewById(R.id.btn_spouse);
+        mAddParent = findViewById(R.id.btn_parent);
+        mAddChild = findViewById(R.id.btn_child);
+        mAddBrothers = findViewById(R.id.btn_brothers);
 
         mBackground.setOnClickListener(click);
         btnAdd.setOnClickListener(click);
@@ -265,24 +265,24 @@ public class FamilyTreeActivity extends BaseActivity implements IFamilyView {
                         openFloatingMenu();
                     }
                     break;
-                case R.id.tv_spouse:
+                case R.id.btn_spouse:
                     if (TextUtils.isEmpty(mSelectFamily.getSpouseId())) {
                         toAddFamily(Constants.TYPE_ADD_SPOUSE);
                     } else {
                         Snackbar.make(mRootView, "已有配偶", Snackbar.LENGTH_LONG).show();
                     }
                     break;
-                case R.id.tv_parent:
+                case R.id.btn_parent:
                     if (TextUtils.isEmpty(mSelectFamily.getFatherId()) || TextUtils.isEmpty(mSelectFamily.getMotherId())) {
                         toAddFamily(Constants.TYPE_ADD_PARENT);
                     } else {
                         Snackbar.make(mRootView, "已有父亲和母亲", Snackbar.LENGTH_LONG).show();
                     }
                     break;
-                case R.id.tv_child:
+                case R.id.btn_child:
                     toAddFamily(Constants.TYPE_ADD_CHILD);
                     break;
-                case R.id.tv_brothers:
+                case R.id.btn_brothers:
                     final String fatherId = mSelectFamily.getFatherId();
                     final String motherId = mSelectFamily.getMotherId();
                     final String name = mSelectFamily.getMemberName();

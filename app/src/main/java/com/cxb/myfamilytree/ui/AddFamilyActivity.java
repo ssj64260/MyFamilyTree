@@ -100,11 +100,11 @@ public class AddFamilyActivity extends BaseActivity implements IAddFamilyView {
 
         mPresenter.attachView(this);
 
-        ivAvatar = (ImageView) findViewById(R.id.iv_avatar);
-        mEditName = (EditText) findViewById(R.id.et_name);
-        mEditCall = (EditText) findViewById(R.id.et_call);
-        mEditBirthday = (EditText) findViewById(R.id.et_birthday);
-        mGenderGroup = (RadioGroup) findViewById(R.id.rg_gender);
+        ivAvatar = findViewById(R.id.iv_avatar);
+        mEditName = findViewById(R.id.et_name);
+        mEditCall = findViewById(R.id.et_call);
+        mEditBirthday = findViewById(R.id.et_birthday);
+        mGenderGroup = findViewById(R.id.rg_gender);
 
         final String familyName = mSelectFamily.getMemberName();
         if (Constants.TYPE_ADD_SPOUSE.equals(mAddType)) {

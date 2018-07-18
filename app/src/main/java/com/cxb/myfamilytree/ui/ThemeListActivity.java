@@ -64,7 +64,7 @@ public class ThemeListActivity extends BaseActivity implements IThemeListView {
 
         final int lineColor = PrefUtils.isDarkTheme() ? R.color.dark_line : R.color.material_light_white;
 
-        rvThemeList = (RecyclerView) findViewById(R.id.rv_theme_list);
+        rvThemeList = findViewById(R.id.rv_theme_list);
         rvThemeList.setLayoutManager(new LinearLayoutManager(this));
         rvThemeList.addItemDecoration(new RecyclerViewDecoration(this, 1, lineColor));
         rvThemeList.setAdapter(mThemeAdapter);

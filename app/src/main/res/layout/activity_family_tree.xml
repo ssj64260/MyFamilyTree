@@ -35,8 +35,8 @@
         app:layout_behavior="@string/floatingbutton_up_behavior"
         tools:visibility="visible">
 
-        <TextView
-            android:id="@+id/tv_brothers"
+        <Button
+            android:id="@+id/btn_brothers"
             android:layout_width="56dp"
             android:layout_height="40dp"
             android:layout_marginTop="16dp"
@@ -46,8 +46,8 @@
             android:textColor="?attr/title_color"
             android:textSize="14sp" />
 
-        <TextView
-            android:id="@+id/tv_child"
+        <Button
+            android:id="@+id/btn_child"
             android:layout_width="56dp"
             android:layout_height="40dp"
             android:layout_marginTop="16dp"
@@ -57,8 +57,8 @@
             android:textColor="?attr/title_color"
             android:textSize="14sp" />
 
-        <TextView
-            android:id="@+id/tv_parent"
+        <Button
+            android:id="@+id/btn_parent"
             android:layout_width="56dp"
             android:layout_height="40dp"
             android:layout_marginTop="16dp"
@@ -68,8 +68,8 @@
             android:textColor="?attr/title_color"
             android:textSize="14sp" />
 
-        <TextView
-            android:id="@+id/tv_spouse"
+        <Button
+            android:id="@+id/btn_spouse"
             android:layout_width="56dp"
             android:layout_height="40dp"
             android:layout_margin="16dp"

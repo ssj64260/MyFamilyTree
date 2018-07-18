@@ -15,7 +15,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
 import com.cxb.myfamilytree.R;
-import com.cxb.myfamilytree.ui.dialog.DefaultProgressDialog;
+import com.cxb.myfamilytree.ui.dialog.ProgressDialogFragment;
 import com.cxb.myfamilytree.utils.ThemeHelper;
 
 /**
@@ -28,7 +28,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected Toolbar mToolbar;
 
     private InputMethodManager manager;
-    private DefaultProgressDialog mProgress;
+    private ProgressDialogFragment mProgressDialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -104,16 +104,21 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     protected void showProgress(@StringRes int stringId) {
-        if (mProgress == null) {
-            mProgress = new DefaultProgressDialog(this);
+        showProgress(getString(stringId));
+    }
+
+    protected void showProgress(String content) {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialogFragment();
         }
-        mProgress.setMessage(getString(stringId));
-        mProgress.showDialog();
+        mProgressDialog.setCancelable(false);
+        mProgressDialog.setMessage(content);
+        mProgressDialog.show(getSupportFragmentManager(), "ProgressDialog");
     }
 
     protected void hideProgress() {
-        if (mProgress != null) {
-            mProgress.dismissDialog();
+        if (mProgressDialog != null) {
+            mProgressDialog.dismiss();
         }
     }
 
