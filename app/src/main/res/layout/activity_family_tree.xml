@@ -25,10 +25,10 @@
 
     <LinearLayout
         android:id="@+id/ll_buttons"
-        android:layout_width="wrap_content"
+        android:layout_width="88dp"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_marginBottom="72dp"
+        android:paddingBottom="8dp"
         android:gravity="center"
         android:orientation="vertical"
         android:visibility="invisible"
@@ -37,10 +37,9 @@
 
         <Button
             android:id="@+id/btn_brothers"
-            android:layout_width="56dp"
-            android:layout_height="40dp"
-            android:layout_marginTop="16dp"
-            android:background="?attr/colorPrimary"
+            android:layout_width="80dp"
+            android:layout_height="44dp"
+            android:backgroundTint="?attr/colorPrimary"
             android:gravity="center"
             android:text="兄弟姐妹"
             android:textColor="?attr/title_color"
@@ -48,10 +47,9 @@
 
         <Button
             android:id="@+id/btn_child"
-            android:layout_width="56dp"
-            android:layout_height="40dp"
-            android:layout_marginTop="16dp"
-            android:background="?attr/colorPrimary"
+            android:layout_width="80dp"
+            android:layout_height="44dp"
+            android:backgroundTint="?attr/colorPrimary"
             android:gravity="center"
             android:text="子女"
             android:textColor="?attr/title_color"
@@ -59,10 +57,9 @@
 
         <Button
             android:id="@+id/btn_parent"
-            android:layout_width="56dp"
-            android:layout_height="40dp"
-            android:layout_marginTop="16dp"
-            android:background="?attr/colorPrimary"
+            android:layout_width="80dp"
+            android:layout_height="44dp"
+            android:backgroundTint="?attr/colorPrimary"
             android:gravity="center"
             android:text="父母"
             android:textColor="?attr/title_color"
@@ -70,10 +67,9 @@
 
         <Button
             android:id="@+id/btn_spouse"
-            android:layout_width="56dp"
-            android:layout_height="40dp"
-            android:layout_margin="16dp"
-            android:background="?attr/colorPrimary"
+            android:layout_width="80dp"
+            android:layout_height="44dp"
+            android:backgroundTint="?attr/colorPrimary"
             android:gravity="center"
             android:text="配偶"
             android:textColor="?attr/title_color"
@@ -83,8 +79,8 @@
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/btn_add"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
         android:layout_gravity="bottom|end"
         android:layout_marginBottom="16dp"
         android:layout_marginEnd="16dp"
