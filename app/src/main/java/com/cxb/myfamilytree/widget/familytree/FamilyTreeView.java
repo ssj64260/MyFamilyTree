@@ -120,8 +120,8 @@ public class FamilyTreeView extends ViewGroup {
     public FamilyTreeView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
-        TypedArray typedArray = context.obtainStyledAttributes(attrs,R.styleable.FamilyTreeView);
-        final int textColor = typedArray.getColor(R.styleable.FamilyTreeView_ftv_line_color,0xFFBBBBBB)   ;
+        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.FamilyTreeView);
+        final int textColor = typedArray.getColor(R.styleable.FamilyTreeView_ftv_line_color, 0xFFBBBBBB);
         typedArray.recycle();
 
         mScrollWidth = DisplayUtil.dip2px(SCROLL_WIDTH);
@@ -583,14 +583,14 @@ public class FamilyTreeView extends ViewGroup {
         familyView.setTop(top);
         familyView.setTag(family);
 
-        final ImageView ivAvatar = (ImageView) familyView.findViewById(R.id.iv_avatar);
+        final ImageView ivAvatar = familyView.findViewById(R.id.iv_avatar);
         ivAvatar.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, mItemWidthPX));
 
-        final TextView tvName = (TextView) familyView.findViewById(R.id.tv_name);
+        final TextView tvName = familyView.findViewById(R.id.tv_name);
         tvName.setTextSize(NAME_TEXT_SIZE_SP);
         tvName.setText(family.getMemberName());
 
-        final TextView tvCall = (TextView) familyView.findViewById(R.id.tv_call);
+        final TextView tvCall = familyView.findViewById(R.id.tv_call);
         tvCall.setTextSize(CALL_TEXT_SIZE_SP);
         tvCall.setText("(" + family.getCall() + ")");
 
@@ -946,11 +946,7 @@ public class FamilyTreeView extends ViewGroup {
             case MotionEvent.ACTION_MOVE:
                 final int distanceX = Math.abs((int) event.getX() - mLastInterceptX);
                 final int distanceY = Math.abs((int) event.getY() - mLastInterceptY);
-                if (distanceX < mScrollWidth && distanceY < mScrollWidth) {
-                    intercerpt = false;
-                } else {
-                    intercerpt = true;
-                }
+                intercerpt = distanceX >= mScrollWidth || distanceY >= mScrollWidth;
                 break;
             case MotionEvent.ACTION_UP:
                 intercerpt = false;
