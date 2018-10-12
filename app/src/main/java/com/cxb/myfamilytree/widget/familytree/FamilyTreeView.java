@@ -271,14 +271,14 @@ public class FamilyTreeView extends ViewGroup {
         measureMaxCoordinate(4, true, mMyChildrenView);
         measureMaxCoordinate(4, false, mMyChildrenView);
 
-        initMyPart(3);
+        initMyPart();
 
         initEachPart(4, true, mMyLittleBrotherInfo, mMyLittleBrotherView, mMyLittleBroChildrenView);
         measureMaxCoordinate(3, true, mMyLittleBrotherView);
         initEachPart(4, false, mMyBrotherInfo, mMyBrotherView, mMyBroChildrenView);
         measureMaxCoordinate(3, false, mMyBrotherView);
 
-        initMyParentPart(2);
+        initMyParentPart();
 
         initEachPart(3, true, mMyMoUncleInfo, mMyMoUncleView, mMyMoUncleChildrenView);
         measureMaxCoordinate(2, true, mMyMoUncleView);
@@ -293,8 +293,7 @@ public class FamilyTreeView extends ViewGroup {
                               List<Pair<View, View>> childrenViewList) {
         final int position = generation - 1;
         final int count = parentinfoList.size();
-        final List<FamilyBean> parentinfos = new ArrayList<>();
-        parentinfos.addAll(parentinfoList);
+        final List<FamilyBean> parentinfos = new ArrayList<>(parentinfoList);
         if (!isRight) {
             Collections.reverse(parentinfos);
         }
@@ -319,8 +318,7 @@ public class FamilyTreeView extends ViewGroup {
                          List<Pair<View, View>> childrenViewList) {
         final FamilyBean familySpouseInfo = familyInfo.getSpouse();
         final String familySex = familyInfo.getSex();
-        final List<FamilyBean> childList = new ArrayList<>();
-        childList.addAll(familyInfo.getChildren());
+        final List<FamilyBean> childList = new ArrayList<>(familyInfo.getChildren());
         if (!isRight) {
             Collections.reverse(childList);
         }
@@ -448,7 +446,8 @@ public class FamilyTreeView extends ViewGroup {
         parentViewList.add(parentViewPosition, setParentLocate(position - 1, centerLeft, maleLeft, femaleLeft, familyInfo));
     }
 
-    private void initMyPart(int generation) {
+    private void initMyPart() {
+        final int generation = 3;
         final int position = generation - 1;
         final int centerLeft = (mGenerationRight[position + 1] + mGenerationLeft[position + 1]) / 2;
         final int maleLeft = centerLeft - (mItemWidthPX + mSpacePX) / 2;
@@ -472,7 +471,8 @@ public class FamilyTreeView extends ViewGroup {
         }
     }
 
-    private void initMyParentPart(int generation) {
+    private void initMyParentPart() {
+        final int generation = 2;
         if (mMyParentInfo != null) {
             final int position = generation - 1;
             final int parentCenterLeft;
@@ -592,7 +592,9 @@ public class FamilyTreeView extends ViewGroup {
 
         final TextView tvCall = familyView.findViewById(R.id.tv_call);
         tvCall.setTextSize(CALL_TEXT_SIZE_SP);
-        tvCall.setText("(" + family.getCall() + ")");
+        tvCall.setText("(");
+        tvCall.append(family.getCall());
+        tvCall.append(")");
 
         final String url = family.getMemberImg();
         final String sex = family.getSex();
@@ -862,15 +864,20 @@ public class FamilyTreeView extends ViewGroup {
             final int firstX = firstView.getLeft() + mItemWidthPX / 2;
             final int lastX = lastView.getLeft() + mItemWidthPX / 2;
             final int horizontalY = firstView.getTop() - mSpacePX / 2;
-            if (firstX <= centerX && lastX >= centerX) {
-                drawLine(canvas, firstX, centerX, horizontalY, horizontalY);
-                drawLine(canvas, lastX, centerX, horizontalY, horizontalY);
-            } else if (firstX >= centerX && lastX >= centerX) {
-                drawLine(canvas, firstX, centerX, horizontalY, horizontalY);
-                drawLine(canvas, lastX, firstX, horizontalY, horizontalY);
-            } else if (firstX <= centerX && lastX <= centerX) {
-                drawLine(canvas, firstX, lastX, horizontalY, horizontalY);
-                drawLine(canvas, lastX, centerX, horizontalY, horizontalY);
+
+            if (firstX <= centerX) {
+                if (lastX >= centerX) {
+                    drawLine(canvas, firstX, centerX, horizontalY, horizontalY);
+                    drawLine(canvas, lastX, centerX, horizontalY, horizontalY);
+                } else {
+                    drawLine(canvas, firstX, lastX, horizontalY, horizontalY);
+                    drawLine(canvas, lastX, centerX, horizontalY, horizontalY);
+                }
+            } else {
+                if (lastX >= centerX) {
+                    drawLine(canvas, firstX, centerX, horizontalY, horizontalY);
+                    drawLine(canvas, lastX, firstX, horizontalY, horizontalY);
+                }
             }
         }
     }
@@ -906,10 +913,13 @@ public class FamilyTreeView extends ViewGroup {
     };
 
     @Override
+    public boolean performClick() {
+        return super.performClick();
+    }
+
+    @Override
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                break;
             case MotionEvent.ACTION_MOVE:
                 final int currentTouchX = (int) event.getX();
                 final int currentTouchY = (int) event.getY();
@@ -924,8 +934,9 @@ public class FamilyTreeView extends ViewGroup {
                 mLastTouchX = currentTouchX;
                 mLastTouchY = currentTouchY;
                 break;
-            case MotionEvent.ACTION_UP:
-                break;
+                case MotionEvent.ACTION_UP:
+                    performClick();
+                    break;
         }
         return true;
     }
@@ -941,15 +952,11 @@ public class FamilyTreeView extends ViewGroup {
                 mCurrentY = getScrollY();
                 mLastTouchX = (int) event.getX();
                 mLastTouchY = (int) event.getY();
-                intercerpt = false;
                 break;
             case MotionEvent.ACTION_MOVE:
                 final int distanceX = Math.abs((int) event.getX() - mLastInterceptX);
                 final int distanceY = Math.abs((int) event.getY() - mLastInterceptY);
                 intercerpt = distanceX >= mScrollWidth || distanceY >= mScrollWidth;
-                break;
-            case MotionEvent.ACTION_UP:
-                intercerpt = false;
                 break;
         }
         return intercerpt;
