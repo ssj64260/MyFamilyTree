@@ -1,7 +1,7 @@
 package com.cxb.myfamilytree.presenter;
 
 import android.content.res.Resources;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.cxb.myfamilytree.model.IThemeModel;
 import com.cxb.myfamilytree.model.ThemeBean;

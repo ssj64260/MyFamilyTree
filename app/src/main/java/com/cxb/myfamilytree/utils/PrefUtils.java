@@ -2,7 +2,7 @@ package com.cxb.myfamilytree.utils;
 
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.cxb.myfamilytree.app.APP;
 import com.cxb.myfamilytree.config.Constants;

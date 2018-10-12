@@ -1,6 +1,6 @@
 package com.cxb.myfamilytree.model;
 
-import android.support.annotation.ColorRes;
+import androidx.annotation.ColorRes;
 
 /**
  * 主题

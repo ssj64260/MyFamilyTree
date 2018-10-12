@@ -2,16 +2,16 @@ package com.cxb.myfamilytree.widget.dialog;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TimePicker;
 
 import com.cxb.myfamilytree.R;
-import com.orhanobut.logger.Logger;
 
 import java.util.Calendar;
+
+import androidx.appcompat.app.AlertDialog;
 
 /**
  * 日期选择
@@ -37,7 +37,6 @@ public class DateTimePickerDialog extends AlertDialog {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Logger.d("onCreate");
         setContentView(R.layout.dialog_date_picker);
 
         initView();

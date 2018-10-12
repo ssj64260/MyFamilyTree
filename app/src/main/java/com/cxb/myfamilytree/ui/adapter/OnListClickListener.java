@@ -1,6 +1,6 @@
 package com.cxb.myfamilytree.ui.adapter;
 
-import android.support.annotation.IntDef;
+import androidx.annotation.IntDef;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
