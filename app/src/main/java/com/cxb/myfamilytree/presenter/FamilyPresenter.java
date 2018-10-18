@@ -26,7 +26,7 @@ public class FamilyPresenter implements IBasePresenter<IFamilyView> {
         mModel = new FamilyModel();
     }
 
-    public void getFamily(String familyId) {
+    public void initFamily(String familyId) {
         mDisposable.add(
                 mModel.findFamilyById(familyId)
                         .subscribeOn(Schedulers.io())

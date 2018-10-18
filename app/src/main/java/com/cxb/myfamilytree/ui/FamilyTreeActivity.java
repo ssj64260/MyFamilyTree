@@ -104,7 +104,7 @@ public class FamilyTreeActivity extends BaseActivity implements IFamilyView {
         mFamilyTree.setShowBottomSpouse(false);
         mFamilyTree.setOnFamilyClickListener(familyClick);
 
-        mPresenter.getFamily(Constants.MY_ID);
+        mPresenter.initFamily(Constants.MY_ID);
     }
 
     @Override
@@ -150,11 +150,11 @@ public class FamilyTreeActivity extends BaseActivity implements IFamilyView {
                 if (data != null) {
                     final String id = data.getStringExtra(AddFamilyActivity.FAMILY_INFO);
                     if (!TextUtils.isEmpty(id)) {
-                        mPresenter.getFamily(id);
+                        mPresenter.initFamily(id);
                         return;
                     }
                 }
-                mPresenter.getFamily(Constants.MY_ID);
+                mPresenter.initFamily(Constants.MY_ID);
             }
         } else if (requestCode == REQUEST_CODE_THEME) {
             if (resultCode == RESULT_OK) {
@@ -164,7 +164,7 @@ public class FamilyTreeActivity extends BaseActivity implements IFamilyView {
     }
 
     private void toAddFamily(String type) {
-        AddFamilyActivity.show(this, REQUEST_CODE_THEME, mSelectFamily, type);
+        AddFamilyActivity.show(this, REQUEST_CHANGE_FAMILY, mSelectFamily, type);
 
         if (!TextUtils.isEmpty(type)) {
             closeFloatingMenu();

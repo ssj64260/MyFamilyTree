@@ -905,9 +905,11 @@ public class FamilyTreeView extends ViewGroup {
     }
 
     public void scrollToCenter() {
-        mCurrentLeft = (mShowWidthPX - mItemWidthPX) / 2;
-        mCurrentTop = (mShowHeightPX - mItemHeightPX) / 2;
-        scrollTo(mSelectView.getLeft() - mCurrentLeft, mSelectView.getTop() - mCurrentTop);
+        if (mSelectView != null) {
+            mCurrentLeft = (mShowWidthPX - mItemWidthPX) / 2;
+            mCurrentTop = (mShowHeightPX - mItemHeightPX) / 2;
+            scrollTo(mSelectView.getLeft() - mCurrentLeft, mSelectView.getTop() - mCurrentTop);
+        }
     }
 
     private OnClickListener mClick = new OnClickListener() {
