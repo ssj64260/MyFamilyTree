@@ -72,8 +72,8 @@ public class FamilyTreeView extends ViewGroup {
     private int mLastInterceptX;
     private int mLastInterceptY;
 
-    private int mCurrentWidth;//当前选中View离左边距离
-    private int mCurrentHeight;//当前选中View离顶部距离
+    private int mCurrentLeft;//当前选中View离左边距离
+    private int mCurrentTop;//当前选中View离顶部距离
 
     private Paint mPaint;//连线样式
     private Path mPath;//路径
@@ -88,7 +88,8 @@ public class FamilyTreeView extends ViewGroup {
     private List<FamilyBean> mMyFaUncleInfo;//叔伯姑
     private List<FamilyBean> mMyMoUncleInfo;//舅姨
 
-    private View mOnlyMyView;//我view
+    private View mSelectView;//当前选中View
+    private View mOnlyMyView;//我View
     private Pair<View, View> mMyView;//我和配偶View
     private Pair<View, View> mMyParentView;//我的父母View
     private Pair<View, View> mMyPGrandParentView;//我的爷爷奶奶View
@@ -459,6 +460,8 @@ public class FamilyTreeView extends ViewGroup {
             mOnlyMyView = mMyView.second;
         }
 
+        mSelectView = mOnlyMyView;
+
         final List<Pair<View, View>> myPairList = new ArrayList<>(1);
         myPairList.add(mMyView);
         measureMaxCoordinate(generation, true, myPairList);
@@ -611,7 +614,7 @@ public class FamilyTreeView extends ViewGroup {
             familyView.setBackgroundResource(BACKGROUND_NORMAL);
         }
 
-        familyView.setOnClickListener(click);
+        familyView.setOnClickListener(mClick);
 
         this.addView(familyView);
         return familyView;
@@ -639,13 +642,13 @@ public class FamilyTreeView extends ViewGroup {
             setChildViewFrame(childView, childView.getLeft(), childView.getTop(), mItemWidthPX, mItemHeightPX);
         }
 
-        if (mCurrentWidth == 0 && mCurrentHeight == 0) {
-            mCurrentWidth = (mShowWidthPX - mItemWidthPX) / 2;
-            mCurrentHeight = (mShowHeightPX - mItemHeightPX) / 2;
+        if (mCurrentLeft == 0 && mCurrentTop == 0) {
+            mCurrentLeft = (mShowWidthPX - mItemWidthPX) / 2;
+            mCurrentTop = (mShowHeightPX - mItemHeightPX) / 2;
         }
 
         if (mOnlyMyView != null) {
-            scrollTo(mOnlyMyView.getLeft() - mCurrentWidth, mOnlyMyView.getTop() - mCurrentHeight);
+            scrollTo(mOnlyMyView.getLeft() - mCurrentLeft, mOnlyMyView.getTop() - mCurrentTop);
         }
     }
 
@@ -901,13 +904,21 @@ public class FamilyTreeView extends ViewGroup {
         return mDBHelper.ismInquirySpouse();
     }
 
-    private OnClickListener click = new OnClickListener() {
+    public void scrollToCenter() {
+        mCurrentLeft = (mShowWidthPX - mItemWidthPX) / 2;
+        mCurrentTop = (mShowHeightPX - mItemHeightPX) / 2;
+        scrollTo(mSelectView.getLeft() - mCurrentLeft, mSelectView.getTop() - mCurrentTop);
+    }
+
+    private OnClickListener mClick = new OnClickListener() {
         @Override
         public void onClick(View v) {
+            mSelectView = v;
             if (mOnFamilyClickListener != null) {
-                mCurrentWidth = v.getLeft() - getScrollX();
-                mCurrentHeight = v.getTop() - getScrollY();
-                mOnFamilyClickListener.onFamilySelect((FamilyBean) v.getTag());
+                final FamilyBean family = (FamilyBean) v.getTag();
+                mCurrentLeft = v.getLeft() - getScrollX();
+                mCurrentTop = v.getTop() - getScrollY();
+                mOnFamilyClickListener.onFamilySelect(v, family);
             }
         }
     };
@@ -934,9 +945,9 @@ public class FamilyTreeView extends ViewGroup {
                 mLastTouchX = currentTouchX;
                 mLastTouchY = currentTouchY;
                 break;
-                case MotionEvent.ACTION_UP:
-                    performClick();
-                    break;
+            case MotionEvent.ACTION_UP:
+                performClick();
+                break;
         }
         return true;
     }

@@ -24,7 +24,7 @@ import androidx.core.content.FileProvider;
 public class PermissionsHelper {
     private static final int REQUEST_TO_SETTING = 1000;//跳转到系统设置权限页面
 
-    private static final String APP_NAME = "表情包生成器";
+    private static final String APP_NAME = "我的家谱";
     private static final String CONTACTS_TIPS = "在设置-应用-%1$s-权限中开启通讯录权限，以便正常使用该功能";
     private static final String PHONE_TIPS = "在设置-应用-%1$s-权限中开启电话权限，以便正常使用该功能";
     private static final String CALENDAR_TIPS = "在设置-应用-%1$s-权限中开启日历权限，以便正常使用该功能";

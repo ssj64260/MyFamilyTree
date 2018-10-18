@@ -3,8 +3,6 @@ package com.cxb.myfamilytree.ui;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,6 +25,8 @@ import com.cxb.myfamilytree.utils.FastClick;
 import com.cxb.myfamilytree.view.IFamilyView;
 import com.cxb.myfamilytree.widget.familytree.FamilyTreeView;
 import com.cxb.myfamilytree.widget.familytree.OnFamilyClickListener;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 /**
  * 仿亲友+
@@ -123,7 +123,9 @@ public class FamilyTreeActivity extends BaseActivity implements IFamilyView {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_show) {
+        if (id == R.id.action_scroll_to_center) {
+            mFamilyTree.scrollToCenter();
+        } else if (id == R.id.action_show) {
             boolean isShow = mFamilyTree.isShowBottomSpouse();
             if (isShow) {
                 item.setTitle(getString(R.string.show_bottom_spouse));
@@ -240,7 +242,7 @@ public class FamilyTreeActivity extends BaseActivity implements IFamilyView {
 
     private final OnFamilyClickListener familyClick = new OnFamilyClickListener() {
         @Override
-        public void onFamilySelect(FamilyBean family) {
+        public void onFamilySelect(View view, FamilyBean family) {
             if (family.isSelect()) {
                 toAddFamily("");
             } else {

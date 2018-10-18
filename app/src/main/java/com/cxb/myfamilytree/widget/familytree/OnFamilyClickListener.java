@@ -1,6 +1,8 @@
 package com.cxb.myfamilytree.widget.familytree;
 
 
+import android.view.View;
+
 import com.cxb.myfamilytree.model.FamilyBean;
 
 /**
@@ -8,5 +10,5 @@ import com.cxb.myfamilytree.model.FamilyBean;
  */
 
 public interface OnFamilyClickListener {
-    void onFamilySelect(FamilyBean family);
+    void onFamilySelect(View view, FamilyBean family);
 }
