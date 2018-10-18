@@ -36,8 +36,6 @@ import java.io.File;
 import java.util.Calendar;
 import java.util.Date;
 
-import androidx.appcompat.app.AlertDialog;
-
 import static com.cxb.myfamilytree.model.FamilyBean.SEX_FEMALE;
 import static com.cxb.myfamilytree.model.FamilyBean.SEX_MALE;
 
@@ -61,7 +59,8 @@ public class AddFamilyActivity extends BaseActivity implements IAddFamilyView {
     private Button btnDelete;
 
     private DateTimePickerDialog mDatePicker;
-    private AlertDialog mAlertDialog;
+    private AlertDialogFragment mDeleteDialog;
+    private AlertDialogFragment mModifyDialog;
 
     private FamilyBean mSelectFamily;
     private String mAddType;
@@ -191,62 +190,75 @@ public class AddFamilyActivity extends BaseActivity implements IAddFamilyView {
     }
 
     private void showModifyDialog(final String name, final String call, final String birthday, final String gender) {
-        final DialogInterface.OnClickListener dialogClick = new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                if (DialogInterface.BUTTON_POSITIVE == which) {
-                    final boolean isChangeGender = !gender.equals(mSelectFamily.getSex());
-                    final String oldPath = mSelectFamily.getMemberImg();
-                    if (!TextUtils.isEmpty(oldPath)) {
-                        final File file = new File(oldPath);
-                        if (file.exists()) {
-                            file.delete();
+        if (mModifyDialog == null) {
+            final DialogInterface.OnClickListener dialogClick = new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                    if (DialogInterface.BUTTON_POSITIVE == which) {
+                        final boolean isChangeGender = !gender.equals(mSelectFamily.getSex());
+                        final String oldPath = mSelectFamily.getMemberImg();
+                        if (!TextUtils.isEmpty(oldPath)) {
+                            final File file = new File(oldPath);
+                            if (file.exists()) {
+                                file.delete();
+                            }
                         }
+
+                        mSelectFamily.setMemberImg(mAvatarPath);
+                        mSelectFamily.setMemberName(name);
+                        mSelectFamily.setCall(call);
+                        mSelectFamily.setBirthday(birthday);
+                        mSelectFamily.setSex(gender);
+                        mPresenter.updateFamilyInfo(mSelectFamily, isChangeGender);
                     }
-
-                    mSelectFamily.setMemberImg(mAvatarPath);
-                    mSelectFamily.setMemberName(name);
-                    mSelectFamily.setCall(call);
-                    mSelectFamily.setBirthday(birthday);
-                    mSelectFamily.setSex(gender);
-                    mPresenter.updateFamilyInfo(mSelectFamily, isChangeGender);
                 }
-            }
-        };
+            };
 
-        final AlertDialogFragment dialog = new AlertDialogFragment();
-        dialog.setCancelable(true);
-        dialog.setConfirmButton(getString(R.string.edit), dialogClick);
-        dialog.setCancelButton(getString(R.string.cancel), dialogClick);
-        if (TextUtils.isEmpty(mSelectFamily.getSpouseId()) || gender.equals(mSelectFamily.getSex())) {
-            dialog.setMessage("是否要修改该亲人的信息？");
-        } else {
-            dialog.setMessage("更改性别后，配偶的性别也相应更改，是否继续修改该亲人的信息？");
+            mModifyDialog = new AlertDialogFragment();
+            mModifyDialog.setCancelable(true);
+            mModifyDialog.setConfirmButton(getString(R.string.edit), dialogClick);
+            mModifyDialog.setCancelButton(getString(R.string.cancel), dialogClick);
         }
 
-        dialog.show(getSupportFragmentManager(), "ModifyDialog");
+        if (TextUtils.isEmpty(mSelectFamily.getSpouseId()) || gender.equals(mSelectFamily.getSex())) {
+            mModifyDialog.setMessage("是否要修改该亲人的信息？");
+        } else {
+            mModifyDialog.setMessage("更改性别后，配偶的性别也相应更改，是否继续修改该亲人的信息？");
+        }
+
+        if (mModifyDialog.isAdded()) {
+            mModifyDialog.dismiss();
+        } else {
+            mModifyDialog.show(getSupportFragmentManager(), "ModifyDialog");
+        }
     }
 
     private void showDeleteDialog() {
-        final DialogInterface.OnClickListener dialogClick = new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                if (DialogInterface.BUTTON_POSITIVE == which) {
-                    mPresenter.deleteFamily(mSelectFamily);
+        if (mDeleteDialog == null) {
+            final DialogInterface.OnClickListener dialogClick = new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                    if (DialogInterface.BUTTON_POSITIVE == which) {
+                        mPresenter.deleteFamily(mSelectFamily);
+                    }
                 }
-            }
-        };
+            };
 
-        final AlertDialogFragment dialog = new AlertDialogFragment();
-        dialog.setCancelable(true);
-        dialog.setConfirmButton(getString(R.string.delete), dialogClick);
-        dialog.setCancelButton(getString(R.string.cancel), dialogClick);
-        dialog.setTitle("温馨提示");
-        dialog.setMessage("删除\"" + mSelectFamily.getMemberName() + "\"后，其相关的家谱分支将不会显示，是否继续删除该亲人？");
+            mDeleteDialog = new AlertDialogFragment();
+            mDeleteDialog.setCancelable(true);
+            mDeleteDialog.setConfirmButton(getString(R.string.delete), dialogClick);
+            mDeleteDialog.setCancelButton(getString(R.string.cancel), dialogClick);
+            mDeleteDialog.setTitle("温馨提示");
+            mDeleteDialog.setMessage("删除\"" + mSelectFamily.getMemberName() + "\"后，其相关的家谱分支将不会显示，是否继续删除该亲人？");
+        }
 
-        dialog.show(getSupportFragmentManager(), "DeleteDialog");
+        if (mDeleteDialog.isAdded()) {
+            mDeleteDialog.dismiss();
+        } else {
+            mDeleteDialog.show(getSupportFragmentManager(), "DeleteDialog");
+        }
     }
 
     private void doSelectPicture() {
