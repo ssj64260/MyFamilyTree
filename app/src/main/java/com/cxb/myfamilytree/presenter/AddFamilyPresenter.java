@@ -191,15 +191,34 @@ public class AddFamilyPresenter implements IBasePresenter<IAddFamilyView> {
             observables.add(mModel.exchangeParentId(maleId, femaleId));
         }
 
+        final ObservableSource[] sources = new ObservableSource[observables.size()];
+
         mDisposable.add(
                 Observable
-                        .mergeArray(observables.toArray(new ObservableSource[observables.size()]))
+                        .mergeArray(observables.toArray(sources))
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .doOnComplete(new Action() {
                             @Override
                             public void run() {
                                 if (isActive()) {
+                                    mView.setResultAndFinish();
+                                }
+                            }
+                        })
+                        .subscribe());
+    }
+
+    public void deleteFamily(final FamilyBean family) {
+        mDisposable.add(
+                mModel.deleteFamily(family)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .doOnComplete(new Action() {
+                            @Override
+                            public void run() {
+                                if (isActive()) {
+                                    family.setMemberId("");
                                     mView.setResultAndFinish();
                                 }
                             }

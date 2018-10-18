@@ -104,4 +104,18 @@ public class FamilyModel implements IFamilyModel {
             }
         });
     }
+
+    @Override
+    public Observable deleteFamily(final FamilyBean family) {
+        return Observable.create(new ObservableOnSubscribe() {
+            @Override
+            public void subscribe(ObservableEmitter e) throws Exception {
+                final FamilyDBHelper dbHelper = new FamilyDBHelper(APP.get());
+                dbHelper.deleteFamily(family);
+                dbHelper.closeDB();
+
+                e.onComplete();
+            }
+        });
+    }
 }

@@ -30,6 +30,7 @@
     <string name="call_can_not_null">称呼不能为空</string>
     <string name="cancel">取消</string>
     <string name="edit">修改</string>
+    <string name="delete">删除</string>
 
     <string name="green">原谅绿</string>
     <string name="red">姨妈红</string>

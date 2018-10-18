@@ -75,9 +75,9 @@ public class DateTimePickerDialog extends AlertDialog {
     }
 
     private void initView() {
-        dpDate = (DatePicker) findViewById(R.id.dp_date);
-        tpTime = (TimePicker) findViewById(R.id.tp_time);
-        btnConfrim = (Button) findViewById(R.id.btn_confirm);
+        dpDate = findViewById(R.id.dp_date);
+        tpTime = findViewById(R.id.tp_time);
+        btnConfrim = findViewById(R.id.btn_confirm);
         btnConfrim.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -87,7 +87,12 @@ public class DateTimePickerDialog extends AlertDialog {
                         if (mIsTimePicker) {
                             content = tpTime.getCurrentHour() + ":" + tpTime.getCurrentMinute() + ":00";
                         } else {
-                            content = dpDate.getYear() + "-" + (dpDate.getMonth() + 1) + "-" + dpDate.getDayOfMonth();
+                            final String month = String.valueOf(dpDate.getMonth() + 1);
+                            final String day = String.valueOf(dpDate.getDayOfMonth());
+
+                            content = dpDate.getYear()
+                                    + "-" + (month.length() < 2 ? "0" + month : month)
+                                    + "-" + (day.length() < 2 ? "0" + day : day);
                         }
                         if (mDialogClickListener != null) {
                             mDialogClickListener.onConfirmListener(mTag, content);

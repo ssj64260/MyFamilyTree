@@ -81,42 +81,60 @@ public class FamilyDBHelper {
                 .where(sql, parentId, parentId, ignoreChildId, birthday));
     }
 
-    public int save(List<FamilyBean> families) {
-        return liteOrm.save(families);
+    public void save(List<FamilyBean> families) {
+        liteOrm.save(families);
     }
 
-    public long save(FamilyBean family) {
-        return liteOrm.save(family);
+    public void save(FamilyBean family) {
+        liteOrm.save(family);
     }
 
-    public int updateSpouseId(String currentId, String spouseId) {
+    public void updateSpouseId(String currentId, String spouseId) {
         final Map<String, Object> map = new HashMap<>(1);
         map.put("spouseId", spouseId);
-        return liteOrm.update(new WhereBuilder(FamilyBean.class)
+        liteOrm.update(new WhereBuilder(FamilyBean.class)
                 .where("memberId = ?", currentId), new ColumnsValue(map), ConflictAlgorithm.Fail);
     }
 
-    public int updateParentId(String fatherId, String motherId) {
+    public void updateParentId(String fatherId, String motherId) {
         final Map<String, Object> map = new HashMap<>(2);
         map.put("fatherId", fatherId);
         map.put("motherId", motherId);
-        return liteOrm.update(new WhereBuilder(FamilyBean.class)
+        liteOrm.update(new WhereBuilder(FamilyBean.class)
                 .where("fatherId = ? or motherId = ?", fatherId, motherId), new ColumnsValue(map), ConflictAlgorithm.Fail);
     }
 
-    public int exchangeParentId(String afterChangeFatherId, String afterChangeMotherId) {
+    public void exchangeParentId(String afterChangeFatherId, String afterChangeMotherId) {
         final Map<String, Object> map = new HashMap<>(2);
         map.put("fatherId", afterChangeFatherId);
         map.put("motherId", afterChangeMotherId);
-        return liteOrm.update(new WhereBuilder(FamilyBean.class)
+        liteOrm.update(new WhereBuilder(FamilyBean.class)
                 .where("fatherId = ? or motherId = ?", afterChangeMotherId, afterChangeFatherId), new ColumnsValue(map), ConflictAlgorithm.Fail);
     }
 
-    public int updateGender(String familyId, String gender) {
+    public void updateGender(String familyId, String gender) {
         final Map<String, Object> map = new HashMap<>(1);
         map.put("sex", gender);
-        return liteOrm.update(new WhereBuilder(FamilyBean.class)
+        liteOrm.update(new WhereBuilder(FamilyBean.class)
                 .where("memberId = ?", familyId), new ColumnsValue(map), ConflictAlgorithm.Fail);
+    }
+
+    public void deleteFamily(FamilyBean family) {
+        final String familyId = family.getMemberId();
+        final Map<String, Object> map = new HashMap<>(1);
+
+        map.put("fatherId", "");
+        liteOrm.update(new WhereBuilder(FamilyBean.class)
+                .where("fatherId = ?", familyId), new ColumnsValue(map), ConflictAlgorithm.Fail);
+        map.clear();
+        map.put("motherId", "");
+        liteOrm.update(new WhereBuilder(FamilyBean.class)
+                .where("motherId = ?", familyId), new ColumnsValue(map), ConflictAlgorithm.Fail);
+        map.clear();
+        map.put("spouseId", "");
+        liteOrm.update(new WhereBuilder(FamilyBean.class)
+                .where("spouse = ?", familyId), new ColumnsValue(map), ConflictAlgorithm.Fail);
+        liteOrm.delete(family);
     }
 
     public void closeDB() {

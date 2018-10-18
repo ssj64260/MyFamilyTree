@@ -7,11 +7,11 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import androidx.appcompat.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -28,12 +28,15 @@ import com.cxb.myfamilytree.utils.FileUtils;
 import com.cxb.myfamilytree.utils.ImageUtils;
 import com.cxb.myfamilytree.utils.SDCardUtils;
 import com.cxb.myfamilytree.view.IAddFamilyView;
+import com.cxb.myfamilytree.widget.dialog.AlertDialogFragment;
 import com.cxb.myfamilytree.widget.dialog.DateTimePickerDialog;
 import com.cxb.myfamilytree.widget.dialog.DialogListener;
 
 import java.io.File;
 import java.util.Calendar;
 import java.util.Date;
+
+import androidx.appcompat.app.AlertDialog;
 
 import static com.cxb.myfamilytree.model.FamilyBean.SEX_FEMALE;
 import static com.cxb.myfamilytree.model.FamilyBean.SEX_MALE;
@@ -55,6 +58,7 @@ public class AddFamilyActivity extends BaseActivity implements IAddFamilyView {
     private EditText mEditCall;
     private EditText mEditBirthday;
     private RadioGroup mGenderGroup;
+    private Button btnDelete;
 
     private DateTimePickerDialog mDatePicker;
     private AlertDialog mAlertDialog;
@@ -105,6 +109,7 @@ public class AddFamilyActivity extends BaseActivity implements IAddFamilyView {
         mEditCall = findViewById(R.id.et_call);
         mEditBirthday = findViewById(R.id.et_birthday);
         mGenderGroup = findViewById(R.id.rg_gender);
+        btnDelete = findViewById(R.id.btn_delete);
 
         final String familyName = mSelectFamily.getMemberName();
         if (Constants.TYPE_ADD_SPOUSE.equals(mAddType)) {
@@ -136,6 +141,11 @@ public class AddFamilyActivity extends BaseActivity implements IAddFamilyView {
             mEditName.setText(mSelectFamily.getMemberName());
             mEditCall.setText(mSelectFamily.getCall());
             mEditBirthday.setText(mSelectFamily.getBirthday());
+
+            final boolean isMy = Constants.MY_ID.endsWith(mSelectFamily.getMemberId());
+
+            btnDelete.setVisibility(isMy ? View.GONE : View.VISIBLE);
+            btnDelete.setOnClickListener(mClick);
 
             final int count = mGenderGroup.getChildCount();
             if (count == 2) {
@@ -180,6 +190,65 @@ public class AddFamilyActivity extends BaseActivity implements IAddFamilyView {
         mDatePicker.show();
     }
 
+    private void showModifyDialog(final String name, final String call, final String birthday, final String gender) {
+        final DialogInterface.OnClickListener dialogClick = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                if (DialogInterface.BUTTON_POSITIVE == which) {
+                    final boolean isChangeGender = !gender.equals(mSelectFamily.getSex());
+                    final String oldPath = mSelectFamily.getMemberImg();
+                    if (!TextUtils.isEmpty(oldPath)) {
+                        final File file = new File(oldPath);
+                        if (file.exists()) {
+                            file.delete();
+                        }
+                    }
+
+                    mSelectFamily.setMemberImg(mAvatarPath);
+                    mSelectFamily.setMemberName(name);
+                    mSelectFamily.setCall(call);
+                    mSelectFamily.setBirthday(birthday);
+                    mSelectFamily.setSex(gender);
+                    mPresenter.updateFamilyInfo(mSelectFamily, isChangeGender);
+                }
+            }
+        };
+
+        final AlertDialogFragment dialog = new AlertDialogFragment();
+        dialog.setCancelable(true);
+        dialog.setConfirmButton(getString(R.string.edit), dialogClick);
+        dialog.setCancelButton(getString(R.string.cancel), dialogClick);
+        if (TextUtils.isEmpty(mSelectFamily.getSpouseId()) || gender.equals(mSelectFamily.getSex())) {
+            dialog.setMessage("是否要修改该亲人的信息？");
+        } else {
+            dialog.setMessage("更改性别后，配偶的性别也相应更改，是否继续修改该亲人的信息？");
+        }
+
+        dialog.show(getSupportFragmentManager(), "ModifyDialog");
+    }
+
+    private void showDeleteDialog() {
+        final DialogInterface.OnClickListener dialogClick = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                if (DialogInterface.BUTTON_POSITIVE == which) {
+                    mPresenter.deleteFamily(mSelectFamily);
+                }
+            }
+        };
+
+        final AlertDialogFragment dialog = new AlertDialogFragment();
+        dialog.setCancelable(true);
+        dialog.setConfirmButton(getString(R.string.delete), dialogClick);
+        dialog.setCancelButton(getString(R.string.cancel), dialogClick);
+        dialog.setTitle("温馨提示");
+        dialog.setMessage("删除\"" + mSelectFamily.getMemberName() + "\"后，其相关的家谱分支将不会显示，是否继续删除该亲人？");
+
+        dialog.show(getSupportFragmentManager(), "DeleteDialog");
+    }
+
     private void doSelectPicture() {
         Intent pickIntent = new Intent(Intent.ACTION_PICK);
         pickIntent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
@@ -222,44 +291,7 @@ public class AddFamilyActivity extends BaseActivity implements IAddFamilyView {
             showToast(getString(R.string.call_can_not_null));
         } else {
             if (TextUtils.isEmpty(mAddType)) {
-                if (mAlertDialog == null) {
-                    mAlertDialog = new AlertDialog.Builder(this).create();
-                    mAlertDialog.setCanceledOnTouchOutside(false);
-                    mAlertDialog.setCancelable(true);
-                    mAlertDialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.edit), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            final boolean isChangeGender = !gender.equals(mSelectFamily.getSex());
-                            final String oldPath = mSelectFamily.getMemberImg();
-                            if (!TextUtils.isEmpty(oldPath)) {
-                                final File file = new File(oldPath);
-                                if (file.exists()) {
-                                    file.delete();
-                                }
-                            }
-
-                            mSelectFamily.setMemberImg(mAvatarPath);
-                            mSelectFamily.setMemberName(name);
-                            mSelectFamily.setCall(call);
-                            mSelectFamily.setBirthday(birthday);
-                            mSelectFamily.setSex(gender);
-                            mPresenter.updateFamilyInfo(mSelectFamily, isChangeGender);
-                        }
-                    });
-                    mAlertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-                }
-
-                if (TextUtils.isEmpty(mSelectFamily.getSpouseId()) || gender.equals(mSelectFamily.getSex())) {
-                    mAlertDialog.setMessage("是否要修改该亲人的信息？");
-                } else {
-                    mAlertDialog.setMessage("更改性别后，配偶的性别也相应更改，是否继续修改该亲人的信息？");
-                }
-                mAlertDialog.show();
+                showModifyDialog(name, call, birthday, gender);
             } else {
                 final FamilyBean family = new FamilyBean();
                 family.setMemberImg(mAvatarPath);
@@ -359,6 +391,9 @@ public class AddFamilyActivity extends BaseActivity implements IAddFamilyView {
                 case R.id.et_birthday:
                     final String dateText = mEditBirthday.getText().toString();
                     showDateDialog(R.id.et_birthday, dateText);
+                    break;
+                case R.id.btn_delete:
+                    showDeleteDialog();
                     break;
             }
         }

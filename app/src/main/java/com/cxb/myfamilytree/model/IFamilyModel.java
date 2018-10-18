@@ -20,4 +20,5 @@ public interface IFamilyModel {
 
     Observable updateGender(String familyId, String gender);
 
+    Observable deleteFamily(FamilyBean family);
 }
