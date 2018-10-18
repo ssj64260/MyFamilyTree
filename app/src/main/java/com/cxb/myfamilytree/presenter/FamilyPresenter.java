@@ -26,7 +26,7 @@ public class FamilyPresenter implements IBasePresenter<IFamilyView> {
         mModel = new FamilyModel();
     }
 
-    public void initFamily(String familyId) {
+    public void initFamily(String familyId, final boolean isToCenter) {
         mDisposable.add(
                 mModel.findFamilyById(familyId)
                         .subscribeOn(Schedulers.io())
@@ -36,7 +36,7 @@ public class FamilyPresenter implements IBasePresenter<IFamilyView> {
                                     @Override
                                     public void accept(@NonNull FamilyBean family) {
                                         if (isActive()) {
-                                            mView.showFamilyTree(family);
+                                            mView.showFamilyTree(family, isToCenter);
                                         }
                                     }
                                 },

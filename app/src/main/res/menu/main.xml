@@ -2,6 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/action_scroll_to_my"
+        android:orderInCategory="100"
+        android:title="@string/scroll_to_my"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/action_scroll_to_center"
         android:orderInCategory="100"
         android:title="@string/scroll_to_center"

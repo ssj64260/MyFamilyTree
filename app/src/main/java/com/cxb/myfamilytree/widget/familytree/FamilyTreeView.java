@@ -171,11 +171,15 @@ public class FamilyTreeView extends ViewGroup {
         mMyFaUncleChildrenView = new ArrayList<>();
     }
 
-    public void drawFamilyTree(FamilyBean family) {
+    public void drawFamilyTree(FamilyBean family, boolean isToCenter) {
         recycleAllView();
         initData(family);
         initView();
         invalidate();
+
+        if (isToCenter) {
+            scrollToCenter();
+        }
     }
 
     public void destroyView() {

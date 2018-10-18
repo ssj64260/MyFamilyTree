@@ -104,7 +104,7 @@ public class FamilyTreeActivity extends BaseActivity implements IFamilyView {
         mFamilyTree.setShowBottomSpouse(false);
         mFamilyTree.setOnFamilyClickListener(familyClick);
 
-        mPresenter.initFamily(Constants.MY_ID);
+        mPresenter.initFamily(Constants.MY_ID, true);
     }
 
     @Override
@@ -123,7 +123,14 @@ public class FamilyTreeActivity extends BaseActivity implements IFamilyView {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_scroll_to_center) {
+        if (id == R.id.action_scroll_to_my) {
+            final String familyId = mSelectFamily.getMemberId();
+            if (Constants.MY_ID.equals(familyId)) {
+                mFamilyTree.scrollToCenter();
+            } else {
+                mPresenter.initFamily(Constants.MY_ID, true);
+            }
+        } else if (id == R.id.action_scroll_to_center) {
             mFamilyTree.scrollToCenter();
         } else if (id == R.id.action_show) {
             boolean isShow = mFamilyTree.isShowBottomSpouse();
@@ -133,7 +140,7 @@ public class FamilyTreeActivity extends BaseActivity implements IFamilyView {
                 item.setTitle(getString(R.string.not_show_bottom_spouse));
             }
             mFamilyTree.setShowBottomSpouse(!isShow);
-            showFamilyTree(mSelectFamily);
+            showFamilyTree(mSelectFamily, false);
             return true;
         } else if (id == R.id.action_choose_theme) {
             ThemeListActivity.show(this, REQUEST_CODE_THEME);
@@ -150,11 +157,11 @@ public class FamilyTreeActivity extends BaseActivity implements IFamilyView {
                 if (data != null) {
                     final String id = data.getStringExtra(AddFamilyActivity.FAMILY_INFO);
                     if (!TextUtils.isEmpty(id)) {
-                        mPresenter.initFamily(id);
+                        mPresenter.initFamily(id, false);
                         return;
                     }
                 }
-                mPresenter.initFamily(Constants.MY_ID);
+                mPresenter.initFamily(Constants.MY_ID, true);
             }
         } else if (requestCode == REQUEST_CODE_THEME) {
             if (resultCode == RESULT_OK) {
@@ -246,7 +253,7 @@ public class FamilyTreeActivity extends BaseActivity implements IFamilyView {
             if (family.isSelect()) {
                 toAddFamily("");
             } else {
-                showFamilyTree(family);
+                showFamilyTree(family, false);
             }
         }
     };
@@ -299,8 +306,8 @@ public class FamilyTreeActivity extends BaseActivity implements IFamilyView {
     };
 
     @Override
-    public void showFamilyTree(FamilyBean family) {
+    public void showFamilyTree(FamilyBean family, boolean isToCenter) {
         mSelectFamily = family;
-        mFamilyTree.drawFamilyTree(mSelectFamily);
+        mFamilyTree.drawFamilyTree(mSelectFamily, isToCenter);
     }
 }

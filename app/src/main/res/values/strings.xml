@@ -9,6 +9,7 @@
     <string name="permission_dialog_btn_cancel">取消</string>
 
     <!--menu-->
+    <string name="scroll_to_my">定位到自己</string>
     <string name="scroll_to_center">定位到中心</string>
     <string name="not_show_bottom_spouse">隐藏底层配偶</string>
     <string name="show_bottom_spouse">显示底层配偶</string>

@@ -8,6 +8,6 @@ import com.cxb.myfamilytree.model.FamilyBean;
 
 public interface IFamilyView {
 
-    void showFamilyTree(FamilyBean family);
+    void showFamilyTree(FamilyBean family, boolean isToCenter);
 
 }
