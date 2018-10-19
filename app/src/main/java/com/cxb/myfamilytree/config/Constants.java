@@ -31,4 +31,5 @@ public class Constants {
     //SharedPreferences
     public final static String THEME = "appTheme";
     public final static String LANGUAGE = "language";
+    public final static String SHOW_BOTTOM_SPOUSE = "show_bottom_spouse";//是否显示底层配偶
 }

@@ -947,6 +947,9 @@ public class FamilyTreeView extends ViewGroup {
                 mCurrentX -= distanceX;
                 mCurrentY -= distanceY;
 
+                mCurrentLeft += distanceX;
+                mCurrentTop += distanceY;
+
                 this.scrollTo(mCurrentX, mCurrentY);
                 mLastTouchX = currentTouchX;
                 mLastTouchY = currentTouchY;

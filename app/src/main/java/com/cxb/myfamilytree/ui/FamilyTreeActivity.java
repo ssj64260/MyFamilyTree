@@ -22,6 +22,7 @@ import com.cxb.myfamilytree.config.Constants;
 import com.cxb.myfamilytree.model.FamilyBean;
 import com.cxb.myfamilytree.presenter.FamilyPresenter;
 import com.cxb.myfamilytree.utils.FastClick;
+import com.cxb.myfamilytree.utils.PrefUtils;
 import com.cxb.myfamilytree.view.IFamilyView;
 import com.cxb.myfamilytree.widget.familytree.FamilyTreeView;
 import com.cxb.myfamilytree.widget.familytree.OnFamilyClickListener;
@@ -117,6 +118,15 @@ public class FamilyTreeActivity extends BaseActivity implements IFamilyView {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
+        final MenuItem item = menu.findItem(R.id.action_show);
+        if (item != null) {
+            final boolean isShow = PrefUtils.getShowBottomSpouse();
+            if (!isShow) {
+                item.setTitle(getString(R.string.show_bottom_spouse));
+            } else {
+                item.setTitle(getString(R.string.not_show_bottom_spouse));
+            }
+        }
         return true;
     }
 
@@ -133,13 +143,13 @@ public class FamilyTreeActivity extends BaseActivity implements IFamilyView {
         } else if (id == R.id.action_scroll_to_center) {
             mFamilyTree.scrollToCenter();
         } else if (id == R.id.action_show) {
-            boolean isShow = mFamilyTree.isShowBottomSpouse();
+            final boolean isShow = PrefUtils.getShowBottomSpouse();
             if (isShow) {
                 item.setTitle(getString(R.string.show_bottom_spouse));
             } else {
                 item.setTitle(getString(R.string.not_show_bottom_spouse));
             }
-            mFamilyTree.setShowBottomSpouse(!isShow);
+            PrefUtils.setShowBottomSpouse(!isShow);
             showFamilyTree(mSelectFamily, false);
             return true;
         } else if (id == R.id.action_choose_theme) {
@@ -308,6 +318,8 @@ public class FamilyTreeActivity extends BaseActivity implements IFamilyView {
     @Override
     public void showFamilyTree(FamilyBean family, boolean isToCenter) {
         mSelectFamily = family;
+        final boolean isShow = PrefUtils.getShowBottomSpouse();
+        mFamilyTree.setShowBottomSpouse(isShow);
         mFamilyTree.drawFamilyTree(mSelectFamily, isToCenter);
     }
 }

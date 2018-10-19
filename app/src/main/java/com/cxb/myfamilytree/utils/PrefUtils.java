@@ -2,12 +2,13 @@ package com.cxb.myfamilytree.utils;
 
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import androidx.annotation.NonNull;
 
 import com.cxb.myfamilytree.app.APP;
 import com.cxb.myfamilytree.config.Constants;
 
 import java.util.Set;
+
+import androidx.annotation.NonNull;
 
 
 /**
@@ -45,16 +46,24 @@ public class PrefUtils {
         getDefaultSp().edit().remove(key).apply();
     }
 
-    public static boolean isDarkTheme(){
+    public static boolean isDarkTheme() {
         final String themeName = getDefaultSp().getString(Constants.THEME, Constants.TEAL);
         return Constants.DARK.equals(themeName);
     }
 
-    public static String getTheme(){
+    public static String getTheme() {
         return getDefaultSp().getString(Constants.THEME, Constants.TEAL);
     }
 
-    public static String getLanguage(){
+    public static String getLanguage() {
         return getDefaultSp().getString(Constants.LANGUAGE, "zh-rCN");
+    }
+
+    public static void setShowBottomSpouse(boolean showBottomSpouse) {
+        set(Constants.SHOW_BOTTOM_SPOUSE, showBottomSpouse);
+    }
+
+    public static boolean getShowBottomSpouse() {
+        return getDefaultSp().getBoolean(Constants.SHOW_BOTTOM_SPOUSE, false);
     }
 }
