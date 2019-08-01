@@ -730,15 +730,27 @@ public class FamilyTreeView extends ViewGroup {
     @Override
     protected void onDraw(Canvas canvas) {
 //        super.onDraw(canvas);
+        // 画选中项的儿子和其子女相关连线
         drawPart(canvas, mMyChildrenInfo, mMyChildrenView, mMyGrandChildrenView);
+        // 画选中项的弟弟妹妹和其子女相关连线
         drawPart(canvas, mMyLittleBrotherInfo, mMyLittleBrotherView, mMyLittleBroChildrenView);
+        // 画选中项的哥哥姐姐和其子女相关连线
         drawPart(canvas, mMyBrotherInfo, mMyBrotherView, mMyBroChildrenView);
+        // 画选中项母亲的兄弟姐妹和其子女相关连线
         drawPart(canvas, mMyMoUncleInfo, mMyMoUncleView, mMyMoUncleChildrenView);
+        // 画选中项父亲的兄弟界面和其子女相关连线
         drawPart(canvas, mMyFaUncleInfo, mMyFaUncleView, mMyFaUncleChildrenView);
+
+        // 画选中项相关连线
         final int mMyX = drawIndependentViewLine(canvas, mMyInfo, mMyView, 3);
+        // 画选中项的父母相关连线
         final int mParentX = drawIndependentViewLine(canvas, mMyParentInfo, mMyParentView, 2);
+        // 画选中项的祖父母相关连线
         final int mPGrandParentX = drawIndependentViewLine(canvas, mMyPGrandParentInfo, mMyPGrandParentView, 1);
+        // 画选中项的外祖父母相关连线
         final int mMGrandParentX = drawIndependentViewLine(canvas, mMyMGrandParentInfo, mMyMGrandParentView, 1);
+
+        //
         drawOtherLine(canvas, mMyChildrenInfo, mMyChildrenView, mMyX);
         drawOtherLine(canvas, mMyLittleBrotherInfo, mMyLittleBrotherView, mParentX);
         drawOtherLine(canvas, mMyBrotherInfo, mMyBrotherView, mParentX);
@@ -760,6 +772,9 @@ public class FamilyTreeView extends ViewGroup {
         drawOtherLine(canvas, mMyMoUncleInfo, mMyMoUncleView, mMGrandParentX);
     }
 
+    /**
+     *
+     */
     private void drawPart(Canvas canvas,
                           List<FamilyBean> parentInfoList,
                           List<Pair<View, View>> parentViewList,
@@ -794,6 +809,30 @@ public class FamilyTreeView extends ViewGroup {
         }
     }
 
+    /**
+     * 画夫妻双方相关线。（仅画通用部分）
+     * 1、夫妻双方连线。
+     * 2、夫妻双方连线中点到子女的连线。（连线只画与子女连线的一半，剩下一半由子女往上画）
+     * 3、夫妻亲属方与其父母的连线。（假设女方为亲属方）
+     * 4、返回夫妻双方子女的连线的中点X坐标。
+     *                    |
+     *                    |(3)
+     *                    |
+     *  ------         ------
+     *  |    |   (1)   |    |
+     *  |    |---------|    |
+     *  |    |    |    |    |
+     *  ------    |(2) ------
+     *            |←--------------（4、返回这个点的X坐标）
+     *            .
+     *            .
+     *            .
+     *         ------
+     *         |    |
+     *         |    |
+     *         |    |
+     *         ------
+     */
     private int drawViewLine(Canvas canvas, FamilyBean familyInfo, Pair<View, View> familyPair) {
         int centerX = 0;
         final String familySex = familyInfo.getSex();
@@ -809,14 +848,18 @@ public class FamilyTreeView extends ViewGroup {
             familyView = familyPair.second;
             familySpouseView = familyPair.first;
         }
+        //夫妻双方都存在
         if (familyView != null && familySpouseView != null) {
             final int horizontalStartX = familyView.getLeft() + mItemWidthPX / 2;
             final int horizontalEndX = familySpouseView.getLeft() + mItemWidthPX / 2;
             final int horizontalY = familyView.getTop() + mItemHeightPX / 2;
+
+            // 画夫妻之间连线
             drawLine(canvas, horizontalStartX, horizontalEndX, horizontalY, horizontalY);
             if (childrenList != null && childrenList.size() > 0) {
                 final int verticalX = (horizontalEndX + horizontalStartX) / 2;
                 final int vertiaclEndY = familyView.getTop() + mItemHeightPX + mSpacePX / 2;
+                // 画夫妻间连线中点到子女的连线
                 drawLine(canvas, verticalX, verticalX, horizontalY, vertiaclEndY);
                 centerX = verticalX;
             }
@@ -829,21 +872,88 @@ public class FamilyTreeView extends ViewGroup {
                 centerX = verticalX;
             }
         }
+
+        // 画夫妻亲属方与其父母的连线
         if (familyView != null && (!TextUtils.isEmpty(fatherId) || !TextUtils.isEmpty(motherId))) {
             final int verticalX = familyView.getLeft() + mItemWidthPX / 2;
             final int verticalStartY = familyView.getTop();
             final int verticalEndY = verticalStartY - mSpacePX / 2;
             drawLine(canvas, verticalX, verticalX, verticalStartY, verticalEndY);
         }
+
+        // 返回夫妻双方子女的连线的中点坐标
         return centerX;
     }
 
+    /**
+     * 画特殊部分连线，根据传入的参数决定四个模块中的哪一个。（包括：1、选中项；2、选中项父母；3、选中项祖父母；4、选中项外祖父母）
+     * 1、夫妻双方连线。
+     * 2、夫妻双方连线中点到子女的连线。
+     * 3、夫妻双方其父母的连线。
+     * 4、返回夫妻双方子女的连线的中点X坐标。
+     *
+     * 【1、选中项。（假设女方为选中项）】
+     *                    |
+     *                    |(3)
+     *                    |
+     *  ------         ------
+     *  |    |   (1)   ||||||
+     *  |    |---------||||||
+     *  |    |    |    ||||||
+     *  ------    |(2) ------
+     *            |←--------------（4、返回这个点的X坐标）
+     *            .
+     *            .
+     *            .
+     *         ------
+     *         |    |
+     *         |    |
+     *         |    |
+     *         ------
+     *
+     * 【2、选中项父母】
+     *     |              |
+     *     |(3)           |(3)
+     *     |              |
+     *  ------         ------
+     *  |    |   (1)   |    |
+     *  | 父 |---------| 母 |
+     *  |    |    |    |    |
+     *  ------    |(2) ------
+     *            |←--------------（4、返回这个点的X坐标）
+     *            .
+     *            .
+     *            .
+     *         ------
+     *         ||||||
+     *         ||||||
+     *         ||||||
+     *         ------
+     *
+     * 【3、选中项祖父母；4、选中项外祖父母】
+     *  ------         ------
+     *  |    |   (1)   |    |
+     *  |    |---------|    |
+     *  |    |    |    |    |
+     *  ------    |(2) ------
+     *            |←--------------（4、返回这个点的X坐标）
+     *            .
+     *            .
+     *            .
+     *         ------
+     *         |    |
+     *         |父/母|
+     *         |    |
+     *         ------
+     */
     private int drawIndependentViewLine(Canvas canvas, FamilyBean familyInfo, Pair<View, View> familyPair, int generation) {
         int centerX = 0;
         if (familyInfo != null) {
-            final boolean haveTopLine;
-            final boolean haveSpoueTopLine;
-            final boolean haveBottomLine;
+            final boolean haveTopLine;//是否有与父母的连线
+            final boolean haveSpoueTopLine;//配偶是否有与父母的连线
+            final boolean haveBottomLine;//是否有与子女的连线
+
+            //一代选中项与配偶都没有父母连线，其他如此类推
             if (generation == 1) {
                 haveTopLine = false;
                 haveSpoueTopLine = false;
@@ -852,7 +962,7 @@ public class FamilyTreeView extends ViewGroup {
                 haveTopLine = true;
                 haveSpoueTopLine = true;
                 haveBottomLine = true;
-            } else if (generation == 3) {
+            } else if (generation == 3) {//三代为选中项
                 haveTopLine = true;
                 haveSpoueTopLine = false;
                 haveBottomLine = mMyChildrenInfo.size() > 0;
@@ -872,14 +982,20 @@ public class FamilyTreeView extends ViewGroup {
                 familyView = familyPair.second;
                 familySpouseView = familyPair.first;
             }
+
+            //夫妻双方都存在
             if (familyView != null && familySpouseView != null) {
                 final int horizontalStartX = familyView.getLeft() + mItemWidthPX / 2;
                 final int horizontalEndX = familySpouseView.getLeft() + mItemWidthPX / 2;
                 final int horizontalY = familyView.getTop() + mItemHeightPX / 2;
+
+                //画夫妻双方连线
                 drawLine(canvas, horizontalStartX, horizontalEndX, horizontalY, horizontalY);
                 if (haveBottomLine) {
                     final int verticalX = (horizontalEndX + horizontalStartX) / 2;
                     final int vertiaclEndY = familyView.getTop() + mItemHeightPX + mSpacePX / 2;
+
+                    //画夫妻双方连线中点到子女的连线
                     drawLine(canvas, verticalX, verticalX, horizontalY, vertiaclEndY);
                     centerX = verticalX;
                 }
@@ -892,13 +1008,17 @@ public class FamilyTreeView extends ViewGroup {
                     centerX = verticalX;
                 }
             }
+
             if (haveTopLine) {
+                //画夫妻亲属方与其父母的连线
                 if (familyView != null && (!TextUtils.isEmpty(fatherId) || !TextUtils.isEmpty(motherId))) {
                     final int verticalX = familyView.getLeft() + mItemWidthPX / 2;
                     final int verticalStartY = familyView.getTop();
                     final int verticalEndY = verticalStartY - mSpacePX / 2;
                     drawLine(canvas, verticalX, verticalX, verticalStartY, verticalEndY);
                 }
+
+                //画配偶与其父母的连线
                 if (haveSpoueTopLine && spouseInfo != null && familySpouseView != null) {
                     final String spouseFatherId = spouseInfo.getFatherId();
                     final String spouseMotherId = spouseInfo.getMotherId();
@@ -914,6 +1034,9 @@ public class FamilyTreeView extends ViewGroup {
         return centerX;
     }
 
+    /**
+     *
+     */
     private void drawOtherLine(Canvas canvas, List<FamilyBean> familyInfoList, List<Pair<View, View>> pairList, int centerX) {
         final int count = pairList.size();
         if (count > 0) {
