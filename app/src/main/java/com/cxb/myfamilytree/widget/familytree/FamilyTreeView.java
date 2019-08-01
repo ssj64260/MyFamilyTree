@@ -1035,7 +1035,8 @@ public class FamilyTreeView extends ViewGroup {
     }
 
     /**
-     *
+     * 画剩余部分连线。
+     * 
      */
     private void drawOtherLine(Canvas canvas, List<FamilyBean> familyInfoList, List<Pair<View, View>> pairList, int centerX) {
         final int count = pairList.size();
