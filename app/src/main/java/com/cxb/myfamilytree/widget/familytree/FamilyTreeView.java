@@ -562,7 +562,7 @@ public class FamilyTreeView extends ViewGroup {
             final int parentFemaleLeft;
 
             // 判断选中项、选中项配偶、选中项父母是否都存在
-            if (!TextUtils.isEmpty(mMyInfo.getSpouseId())) {
+            if (mMyView.first != null && mMyView.second != null) {
                 final int centerLeft;
                 if (SEX_MALE.equals(mySex)) {
                     centerLeft = parentCenterLeft + (mItemWidthPX + mSpacePX) / 2;
@@ -615,7 +615,7 @@ public class FamilyTreeView extends ViewGroup {
                 final int femaleLeft;
 
                 // 判断父亲、父亲的配偶、父亲的父母是否都存在
-                if (!TextUtils.isEmpty(mMyParentInfo.getSpouseId())) {
+                if (mMyParentView.first != null && mMyParentView.second != null) {
                     centerLeft = fatherView.getLeft() + (mItemWidthPX + mSpacePX) / 2;
                     if (TextUtils.isEmpty(mMyPGrandParentInfo.getSpouseId())) {
                         maleLeft = centerLeft;
@@ -637,7 +637,7 @@ public class FamilyTreeView extends ViewGroup {
                 final int femaleLeft;
 
                 // 判断母亲、母亲的配偶、母亲的父母是否存在
-                if (!TextUtils.isEmpty(mMyParentInfo.getSpouseId())) {
+                if (mMyParentView.first != null && mMyParentView.second != null) {
                     centerLeft = motherView.getLeft() - (mItemWidthPX + mSpacePX) / 2;
                     if (TextUtils.isEmpty(mMyMGrandParentInfo.getSpouseId())) {
                         maleLeft = centerLeft;
@@ -871,23 +871,23 @@ public class FamilyTreeView extends ViewGroup {
      * 2、夫妻双方连线中点到子女的连线。（连线只画与子女连线的一半，剩下一半由子女往上画）
      * 3、夫妻亲属方与其父母的连线。（假设女方为亲属方）
      * 4、返回夫妻双方子女的连线的中点X坐标。
-     *                    |
-     *                    |(3)
-     *                    |
-     *  ------         ------
-     *  |    |   (1)   |    |
-     *  |    |---------|    |
-     *  |    |    |    |    |
-     *  ------    |(2) ------
-     *            |←--------------（4、返回这个点的X坐标）
-     *            .
-     *            .
-     *            .
-     *         ------
-     *         |    |
-     *         |    |
-     *         |    |
-     *         ------
+     * |
+     * |(3)
+     * |
+     * ------         ------
+     * |    |   (1)   |    |
+     * |    |---------|    |
+     * |    |    |    |    |
+     * ------    |(2) ------
+     * |←--------------（4、返回这个点的X坐标）
+     * .
+     * .
+     * .
+     * ------
+     * |    |
+     * |    |
+     * |    |
+     * ------
      */
     private int drawViewLine(Canvas canvas, FamilyBean familyInfo, Pair<View, View> familyPair) {
         int centerX = 0;
@@ -965,60 +965,60 @@ public class FamilyTreeView extends ViewGroup {
      * 2、夫妻双方连线中点到子女的连线。
      * 3、夫妻双方其父母的连线。
      * 4、返回夫妻双方子女的连线的中点X坐标。
-     *
+     * <p>
      * 【1、选中项。（假设女方为选中项）】
-     *                    |
-     *                    |(3)
-     *                    |
-     *  ------         ------
-     *  |    |   (1)   ||||||
-     *  |    |---------||||||
-     *  |    |    |    ||||||
-     *  ------    |(2) ------
-     *            |←--------------（4、返回这个点的X坐标）
-     *            .
-     *            .
-     *            .
-     *         ------
-     *         |    |
-     *         |    |
-     *         |    |
-     *         ------
-     *
+     * |
+     * |(3)
+     * |
+     * ------         ------
+     * |    |   (1)   ||||||
+     * |    |---------||||||
+     * |    |    |    ||||||
+     * ------    |(2) ------
+     * |←--------------（4、返回这个点的X坐标）
+     * .
+     * .
+     * .
+     * ------
+     * |    |
+     * |    |
+     * |    |
+     * ------
+     * <p>
      * 【2、选中项父母】
-     *     |              |
-     *     |(3)           |(3)
-     *     |              |
-     *  ------         ------
-     *  |    |   (1)   |    |
-     *  | 父 |---------| 母 |
-     *  |    |    |    |    |
-     *  ------    |(2) ------
-     *            |←--------------（4、返回这个点的X坐标）
-     *            .
-     *            .
-     *            .
-     *         ------
-     *         ||||||
-     *         ||||||
-     *         ||||||
-     *         ------
-     *
+     * |              |
+     * |(3)           |(3)
+     * |              |
+     * ------         ------
+     * |    |   (1)   |    |
+     * | 父 |---------| 母 |
+     * |    |    |    |    |
+     * ------    |(2) ------
+     * |←--------------（4、返回这个点的X坐标）
+     * .
+     * .
+     * .
+     * ------
+     * ||||||
+     * ||||||
+     * ||||||
+     * ------
+     * <p>
      * 【3、选中项祖父母；4、选中项外祖父母】
-     *  ------         ------
-     *  |    |   (1)   |    |
-     *  |    |---------|    |
-     *  |    |    |    |    |
-     *  ------    |(2) ------
-     *            |←--------------（4、返回这个点的X坐标）
-     *            .
-     *            .
-     *            .
-     *         ------
-     *         |    |
-     *         |父/母|
-     *         |    |
-     *         ------
+     * ------         ------
+     * |    |   (1)   |    |
+     * |    |---------|    |
+     * |    |    |    |    |
+     * ------    |(2) ------
+     * |←--------------（4、返回这个点的X坐标）
+     * .
+     * .
+     * .
+     * ------
+     * |    |
+     * |父/母|
+     * |    |
+     * ------
      */
     private int drawIndependentViewLine(Canvas canvas, FamilyBean familyInfo, Pair<View, View> familyPair, int generation) {
         int centerX = 0;
