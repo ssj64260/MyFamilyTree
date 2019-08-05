@@ -252,17 +252,19 @@ public class FamilyTreeView extends ViewGroup {
                     final String pGrandFatherId = father.getFatherId();
                     final String pGrandMotherId = father.getMotherId();
                     mMyPGrandParentInfo = mDBHelper.getCouple(pGrandFatherId, pGrandMotherId);
-                    if (mMyPGrandParentInfo != null) {
-                        mMyFaUncleInfo.addAll(mDBHelper.getChildrenAndGrandChildren(mMyPGrandParentInfo, fatherId));
-                    }
+                    // 由于没有叔叔伯伯，暂时不做这部分数据查询
+//                    if (mMyPGrandParentInfo != null) {
+//                        mMyFaUncleInfo.addAll(mDBHelper.getChildrenAndGrandChildren(mMyPGrandParentInfo, fatherId));
+//                    }
                 }
                 if (mother != null) {
                     final String mGrandFatherId = mother.getFatherId();
                     final String mGrandMotherId = mother.getMotherId();
                     mMyMGrandParentInfo = mDBHelper.getCouple(mGrandFatherId, mGrandMotherId);
-                    if (mMyMGrandParentInfo != null) {
-                        mMyMoUncleInfo.addAll(mDBHelper.getChildrenAndGrandChildren(mMyMGrandParentInfo, motherId));
-                    }
+                    // 由于没有叔叔伯伯，暂时不做这部分数据查询
+//                    if (mMyMGrandParentInfo != null) {
+//                        mMyMoUncleInfo.addAll(mDBHelper.getChildrenAndGrandChildren(mMyMGrandParentInfo, motherId));
+//                    }
                 }
             }
 
@@ -556,9 +558,33 @@ public class FamilyTreeView extends ViewGroup {
             } else {
                 parentCenterLeft = mMyView.second.getLeft();
             }
-            final int parentMaleLeft = parentCenterLeft - (mItemWidthPX + mSpacePX) / 2;
-            final int parentFemaleLeft = parentCenterLeft + (mItemWidthPX + mSpacePX) / 2;
-            mMyParentView = setParentLocate(position, parentCenterLeft, parentMaleLeft, parentFemaleLeft, mMyParentInfo);
+            final int parentMaleLeft;
+            final int parentFemaleLeft;
+
+            // 判断选中项、选中项配偶、选中项父母是否都存在
+            if (!TextUtils.isEmpty(mMyInfo.getSpouseId()) && !TextUtils.isEmpty(mMyParentInfo.getSpouseId())) {
+                if (SEX_MALE.equals(mySex)) {
+                    parentMaleLeft = mMyView.first.getLeft();
+                    if (mMyView.second != null) {
+                        parentFemaleLeft = mMyView.second.getLeft();
+                    } else {
+                        parentFemaleLeft = mMyView.first.getLeft();
+                    }
+                } else {
+                    parentFemaleLeft = mMyView.second.getLeft();
+                    if (mMyView.first != null) {
+                        parentMaleLeft = mMyView.first.getLeft();
+                    } else {
+                        parentMaleLeft = mMyView.second.getLeft();
+                        ;
+                    }
+                }
+                mMyParentView = setMyParentLocate(position, parentMaleLeft, parentFemaleLeft, mMyParentInfo);
+            } else {
+                parentMaleLeft = parentCenterLeft - (mItemWidthPX + mSpacePX) / 2;
+                parentFemaleLeft = parentCenterLeft + (mItemWidthPX + mSpacePX) / 2;
+                mMyParentView = setParentLocate(position, parentCenterLeft, parentMaleLeft, parentFemaleLeft, mMyParentInfo);
+            }
 
             final List<Pair<View, View>> myParentPairList = new ArrayList<>(1);
             myParentPairList.add(mMyParentView);
@@ -577,16 +603,18 @@ public class FamilyTreeView extends ViewGroup {
                 final int centerLeft;
                 final int maleLeft;
                 final int femaleLeft;
-                if (mMyMGrandParentInfo != null) {
-                    centerLeft = fatherView.getLeft();
-                    maleLeft = centerLeft - (mItemWidthPX + mSpacePX);
-                    femaleLeft = centerLeft;
+
+                // 判断父亲、父亲的配偶、父亲的父母是否都存在
+                if (!TextUtils.isEmpty(mMyParentInfo.getSpouseId()) && !TextUtils.isEmpty(mMyPGrandParentInfo.getSpouseId())) {
+                    maleLeft = fatherView.getLeft();
+                    femaleLeft = motherView.getLeft();
+                    mMyPGrandParentView = setMyParentLocate(position - 1, maleLeft, femaleLeft, mMyPGrandParentInfo);
                 } else {
                     centerLeft = fatherView.getLeft();
                     maleLeft = centerLeft - (mItemWidthPX + mSpacePX) / 2;
                     femaleLeft = centerLeft + (mItemWidthPX + mSpacePX) / 2;
+                    mMyPGrandParentView = setParentLocate(position - 1, centerLeft, maleLeft, femaleLeft, mMyPGrandParentInfo);
                 }
-                mMyPGrandParentView = setParentLocate(position - 1, centerLeft, maleLeft, femaleLeft, mMyPGrandParentInfo);
             }
             if (mMyMGrandParentInfo != null) {
                 final int centerLeft;
@@ -604,6 +632,24 @@ public class FamilyTreeView extends ViewGroup {
                 mMyMGrandParentView = setParentLocate(position - 1, centerLeft, maleLeft, femaleLeft, mMyMGrandParentInfo);
             }
         }
+    }
+
+    /**
+     * 只用于选中项的父母，以及选中项的父亲的父母定位用
+     */
+    private Pair<View, View> setMyParentLocate(int position, int maleLeft, int femaleLeft, FamilyBean familyInfo) {
+        final String familySex = familyInfo.getSex();
+        final FamilyBean familySpouseInfo = familyInfo.getSpouse();
+        final View maleView;
+        final View femaleView;
+        if (SEX_MALE.equals(familySex)) {
+            maleView = createFamilyView(familyInfo, maleLeft, mGenerationTop[position]);
+            femaleView = createFamilyView(familySpouseInfo, femaleLeft, mGenerationTop[position]);
+        } else {
+            maleView = createFamilyView(familySpouseInfo, maleLeft, mGenerationTop[position]);
+            femaleView = createFamilyView(familyInfo, femaleLeft, mGenerationTop[position]);
+        }
+        return Pair.create(maleView, femaleView);
     }
 
     private Pair<View, View> setParentLocate(int position, int centerLeft, int maleLeft, int femaleLeft, FamilyBean familyInfo) {
@@ -754,22 +800,26 @@ public class FamilyTreeView extends ViewGroup {
         drawOtherLine(canvas, mMyChildrenInfo, mMyChildrenView, mMyX);
         drawOtherLine(canvas, mMyLittleBrotherInfo, mMyLittleBrotherView, mParentX);
         drawOtherLine(canvas, mMyBrotherInfo, mMyBrotherView, mParentX);
-        if (mMyParentView != null) {
-            final View fatherView = mMyParentView.first;
-            if (fatherView != null && mMyPGrandParentView != null) {
-                final int horizontalY = fatherView.getTop() - mSpacePX / 2;
-                final int horizontalStartX = fatherView.getLeft() + mItemWidthPX / 2;
-                drawLine(canvas, horizontalStartX, mPGrandParentX, horizontalY, horizontalY);
-            }
-            final View motherView = mMyParentView.second;
-            if (motherView != null && mMyMGrandParentView != null) {
-                final int horizontalY = motherView.getTop() - mSpacePX / 2;
-                final int horizontalStartX = motherView.getLeft() + mItemWidthPX / 2;
-                drawLine(canvas, horizontalStartX, mMGrandParentX, horizontalY, horizontalY);
-            }
-        }
-        drawOtherLine(canvas, mMyFaUncleInfo, mMyFaUncleView, mPGrandParentX);
-        drawOtherLine(canvas, mMyMoUncleInfo, mMyMoUncleView, mMGrandParentX);
+
+        //由于没有叔叔伯伯，暂时不做这部分画线
+//        if (mMyParentView != null) {
+//            final View fatherView = mMyParentView.first;
+//            if (fatherView != null && mMyPGrandParentView != null) {
+//                final int horizontalY = fatherView.getTop() - mSpacePX / 2;
+//                final int horizontalStartX = fatherView.getLeft() + mItemWidthPX / 2;
+//                drawLine(canvas, horizontalStartX, mPGrandParentX, horizontalY, horizontalY);
+//            }
+//            final View motherView = mMyParentView.second;
+//            if (motherView != null && mMyMGrandParentView != null) {
+//                final int horizontalY = motherView.getTop() - mSpacePX / 2;
+//                final int horizontalStartX = motherView.getLeft() + mItemWidthPX / 2;
+//                drawLine(canvas, horizontalStartX, mMGrandParentX, horizontalY, horizontalY);
+//            }
+//        }
+
+        //由于没有叔叔伯伯，暂时不做这部分画线
+//        drawOtherLine(canvas, mMyFaUncleInfo, mMyFaUncleView, mPGrandParentX);
+//        drawOtherLine(canvas, mMyMoUncleInfo, mMyMoUncleView, mMGrandParentX);
     }
 
     /**
@@ -1011,7 +1061,13 @@ public class FamilyTreeView extends ViewGroup {
 
             if (haveTopLine) {
                 //画夫妻亲属方与其父母的连线
-                if (familyView != null && (!TextUtils.isEmpty(fatherId) || !TextUtils.isEmpty(motherId))) {
+                if (familyView != null && spouseInfo != null
+                        && !TextUtils.isEmpty(fatherId) && !TextUtils.isEmpty(motherId)) {
+                    final int verticalX = familyView.getLeft() + mItemWidthPX + mSpacePX / 2;
+                    final int verticalStartY = familyView.getTop() + mItemHeightPX / 2;
+                    final int verticalEndY = verticalStartY - mItemHeightPX / 2 - mSpacePX / 2;
+                    drawLine(canvas, verticalX, verticalX, verticalStartY, verticalEndY);
+                } else if (familyView != null && (!TextUtils.isEmpty(fatherId) || !TextUtils.isEmpty(motherId))) {
                     final int verticalX = familyView.getLeft() + mItemWidthPX / 2;
                     final int verticalStartY = familyView.getTop();
                     final int verticalEndY = verticalStartY - mSpacePX / 2;
@@ -1036,7 +1092,7 @@ public class FamilyTreeView extends ViewGroup {
 
     /**
      * 画剩余部分连线。
-     * 
+     *
      */
     private void drawOtherLine(Canvas canvas, List<FamilyBean> familyInfoList, List<Pair<View, View>> pairList, int centerX) {
         final int count = pairList.size();
